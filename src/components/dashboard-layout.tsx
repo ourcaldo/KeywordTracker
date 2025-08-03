@@ -35,7 +35,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50/30">
+    <div className="min-h-screen bg-white">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -44,69 +44,73 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - Icon Only */}
       <aside className={`
-        fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 shadow-sm transform transition-transform lg:translate-x-0
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        fixed top-0 left-0 z-50 h-full w-16 bg-white/90 backdrop-blur-sm border-r border-gray-200/50 shadow-sm transform transition-transform lg:translate-x-0
+        ${sidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full'}
       `}>
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">W</span>
-            </div>
-            <h1 className="text-lg font-semibold text-gray-900">whatsmyserp</h1>
+        <div className="flex items-center justify-center p-4 border-b border-gray-100/50">
+          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">W</span>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X className="h-5 w-5" />
-          </Button>
+          {sidebarOpen && (
+            <>
+              <h1 className="ml-3 text-lg font-semibold text-gray-900 lg:hidden">whatsmyserp</h1>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="ml-auto lg:hidden"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </>
+          )}
         </div>
 
-        <nav className="p-4 space-y-1">
+        <nav className="p-2 space-y-1">
           {navigation.map((item) => {
             const Icon = item.icon
             const isActive = typeof window !== 'undefined' && window.location.pathname === item.href
             return (
               <Button
                 key={item.name}
-                variant={isActive ? "secondary" : "ghost"}
-                className={`w-full justify-start h-10 ${
+                variant="ghost"
+                className={`${sidebarOpen ? 'w-full justify-start h-10' : 'w-12 h-12 p-0 justify-center'} ${
                   isActive 
-                    ? "bg-blue-50 text-blue-700 border border-blue-200" 
-                    : "text-gray-700 hover:bg-gray-50"
+                    ? "bg-blue-50 text-blue-700 border border-blue-200/50" 
+                    : "text-gray-600 hover:bg-gray-50/80"
                 }`}
                 onClick={() => {
                   router.push(item.href)
                   setSidebarOpen(false)
                 }}
+                title={item.name}
               >
-                <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-blue-600" : ""}`} />
-                {item.name}
+                <Icon className={`w-5 h-5 ${sidebarOpen ? 'mr-3' : ''} ${isActive ? "text-blue-600" : ""}`} />
+                {sidebarOpen && <span className="lg:hidden">{item.name}</span>}
               </Button>
             )
           })}
         </nav>
 
-        <div className="absolute bottom-4 left-4 right-4">
+        <div className={`absolute bottom-4 ${sidebarOpen ? 'left-4 right-4' : 'left-2 right-2'}`}>
           <Button
-            variant="outline"
-            className="w-full justify-start h-10 text-gray-700 border-gray-200 hover:bg-gray-50"
+            variant="ghost"
+            className={`${sidebarOpen ? 'w-full justify-start h-10' : 'w-12 h-12 p-0 justify-center'} text-gray-600 hover:bg-gray-50/80`}
             onClick={handleSignOut}
+            title="Sign Out"
           >
-            <LogOut className="w-5 h-5 mr-3" />
-            Sign Out
+            <LogOut className={`w-5 h-5 ${sidebarOpen ? 'mr-3' : ''}`} />
+            {sidebarOpen && <span className="lg:hidden">Sign Out</span>}
           </Button>
         </div>
       </aside>
 
       {/* Main content */}
-      <div className="lg:ml-64">
+      <div className="lg:ml-16">
         {/* Top bar */}
-        <header className="bg-white border-b border-gray-200 px-4 py-4 lg:px-6">
+        <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 px-4 py-4 lg:px-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
@@ -118,13 +122,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Menu className="h-5 w-5" />
               </Button>
               <nav className="hidden md:flex items-center space-x-1">
-                <Button variant="ghost" size="sm" className="text-blue-600 bg-blue-50">
+                <Button variant="ghost" size="sm" className="text-blue-600 bg-blue-50/80">
                   Dashboard
                 </Button>
-                <Button variant="ghost" size="sm" className="text-gray-600">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-gray-50/80">
                   SERP Checker
                 </Button>
-                <Button variant="ghost" size="sm" className="text-gray-600">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-gray-50/80">
                   Tools
                 </Button>
               </nav>
@@ -134,11 +138,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Plus className="h-4 w-4 mr-2" />
                 Add Domain
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="hover:bg-gray-50/80">
                 <Settings className="h-5 w-5" />
               </Button>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-medium text-sm">U</span>
+                </div>
                 <span className="text-sm font-medium text-gray-700">User</span>
               </div>
             </div>
@@ -146,7 +152,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Page content */}
-        <main className="p-4 lg:p-6 bg-gray-50/30 min-h-screen">
+        <main className="p-4 lg:p-6 bg-white min-h-screen">
           {children}
         </main>
       </div>

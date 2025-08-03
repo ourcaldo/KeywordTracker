@@ -91,36 +91,28 @@ export default function AuthenticationPage() {
 
     try {
       if (isSignUp) {
-        console.log('Starting signup process...')
-        console.log('Email:', email)
-        console.log('First Name:', firstName)
-        console.log('Last Name:', lastName)
-        console.log('Phone:', phoneNumber)
-        
-        // Create user account with Supabase Auth
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              display_name: firstName,
-              first_name: firstName,
-              last_name: lastName,
-              phone: phoneNumber
-            }
-          }
+        // Use server-side API route for detailed logging
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            firstName,
+            lastName,
+            phoneNumber
+          })
         })
 
-        console.log('Signup response:', { data, error })
+        const result = await response.json()
 
-        if (error) {
-          console.error('Signup error:', error)
-          throw error
+        if (!response.ok) {
+          throw new Error(result.error || 'Signup failed')
         }
 
-        if (data.user) {
-          console.log('User created successfully:', data.user.id)
-          // User profile will be automatically created by database trigger
+        if (result.success) {
           router.push('/dashboard')
         }
       } else {

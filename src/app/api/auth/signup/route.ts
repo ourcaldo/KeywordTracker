@@ -13,11 +13,12 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
     
-    console.log('Creating user with Supabase Auth...')
+    console.log('Creating user with Supabase Auth (no email confirmation)...')
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: undefined,
         data: {
           display_name: firstName,
           first_name: firstName,

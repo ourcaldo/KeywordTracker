@@ -8,9 +8,31 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     
-    if (!error) {
+    if (!error && data.user) {
+      // Create user profile after successful email confirmation
+      const userData = data.user.user_metadata
+      
+      // Check if profile already exists
+      const { data: existingProfile } = await supabase
+        .from('user_profiles')
+        .select('id')
+        .eq('user_id', data.user.id)
+        .single()
+      
+      if (!existingProfile) {
+        // Create profile manually since trigger is broken
+        await supabase.from('user_profiles').insert({
+          user_id: data.user.id,
+          first_name: userData?.first_name || '',
+          last_name: userData?.last_name || '',
+          phone_number: userData?.phone || '',
+          email: data.user.email || '',
+          plan: 'free'
+        })
+      }
+      
       return NextResponse.redirect(`${origin}${next}`)
     }
   }

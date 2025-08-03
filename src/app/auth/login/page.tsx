@@ -91,33 +91,53 @@ export default function AuthenticationPage() {
 
     try {
       if (isSignUp) {
-        // Simple signup without any database operations
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password
+        // Use our API route instead of direct Supabase
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            firstName,
+            lastName,
+            phoneNumber
+          })
         })
 
-        if (error) throw error
+        const result = await response.json()
+        
+        if (!response.ok) {
+          throw new Error(result.error || 'Signup failed')
+        }
 
-        if (data.user) {
-          // User created successfully in auth, redirect to dashboard
+        if (result.success) {
+          // Redirect to dashboard on success
           router.push('/dashboard')
         }
       } else {
-        console.log('Starting login process...')
-        // Handle login flow
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+        // Login using our API route
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password
+          })
         })
+
+        const result = await response.json()
         
-        console.log('Login response:', { data, error })
-        
-        if (error) {
-          console.error('Login error:', error)
-          throw error
+        if (!response.ok) {
+          throw new Error(result.error || 'Login failed')
         }
-        if (data.user) router.push('/dashboard')
+
+        if (result.success) {
+          router.push('/dashboard')
+        }
       }
     } catch (error: any) {
       console.error('Authentication error:', error)

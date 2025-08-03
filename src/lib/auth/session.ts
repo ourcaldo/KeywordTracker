@@ -1,66 +1,53 @@
-/**
- * Session Management Utilities
- * 
- * Client-side and server-side utilities for managing user sessions.
- * Provides consistent session handling across the application.
- */
+import { cookies } from 'next/headers'
 
-import { createClient } from '@/lib/supabase/client'
-import { createClient as createServerClient } from '@/lib/supabase/server'
+export interface SessionUser {
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+}
 
-/**
- * Client-side session utilities
- */
-export const clientAuth = {
-  /**
-   * Get current user on client side
-   */
-  async getCurrentUser() {
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+export async function getServerSession(): Promise<SessionUser | null> {
+  try {
+    const cookieStore = await cookies()
+    const sessionCookie = cookieStore.get('user_session')
+    
+    if (!sessionCookie) {
+      return null
+    }
+    
+    const user = JSON.parse(sessionCookie.value) as SessionUser
     return user
-  },
-
-  /**
-   * Sign out user on client side
-   */
-  async signOut() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-  },
-
-  /**
-   * Listen to auth state changes
-   */
-  onAuthStateChange(callback: (user: any) => void) {
-    const supabase = createClient()
-    return supabase.auth.onAuthStateChange((event, session) => {
-      callback(session?.user || null)
-    })
+  } catch (error) {
+    console.error('Session parsing error:', error)
+    return null
   }
 }
 
-/**
- * Server-side session utilities
- */
-export const serverAuth = {
-  /**
-   * Get current user on server side
-   */
-  async getCurrentUser() {
-    const supabase = await createServerClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    return user
-  },
-
-  /**
-   * Require authentication (throws if not authenticated)
-   */
-  async requireAuth() {
-    const user = await this.getCurrentUser()
-    if (!user) {
-      throw new Error('Authentication required')
+export function getClientSession(): SessionUser | null {
+  if (typeof window === 'undefined') return null
+  
+  try {
+    // For client-side, we'll check for the cookie manually or use localStorage
+    const sessionData = localStorage.getItem('user_session')
+    if (sessionData) {
+      return JSON.parse(sessionData) as SessionUser
     }
-    return user
+    return null
+  } catch (error) {
+    console.error('Client session parsing error:', error)
+    return null
   }
+}
+
+export function setClientSession(user: SessionUser) {
+  if (typeof window === 'undefined') return
+  
+  localStorage.setItem('user_session', JSON.stringify(user))
+}
+
+export function clearClientSession() {
+  if (typeof window === 'undefined') return
+  
+  localStorage.removeItem('user_session')
 }

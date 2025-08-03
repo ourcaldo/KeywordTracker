@@ -53,12 +53,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50/30 to-pink-50/20 relative">
-      {/* Background pattern for glass effect */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full blur-3xl"></div>
-        <div className="absolute top-40 right-32 w-64 h-64 bg-purple-500 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 left-32 w-80 h-80 bg-pink-500 rounded-full blur-3xl"></div>
+    <div className="min-h-screen bg-white relative">
+      {/* Subtle background pattern for glass effect */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-gray-400 rounded-full blur-3xl"></div>
+        <div className="absolute top-40 right-32 w-64 h-64 bg-gray-500 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 left-32 w-80 h-80 bg-gray-300 rounded-full blur-3xl"></div>
       </div>
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (

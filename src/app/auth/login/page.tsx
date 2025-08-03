@@ -329,6 +329,7 @@ export default function LoginPage() {
                 <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', color: '#374151' }}>
                   <input
                     type="checkbox"
+                    defaultChecked={false}
                     style={{ marginRight: '8px' }}
                     required
                   />

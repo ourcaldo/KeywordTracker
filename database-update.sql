@@ -1,5 +1,6 @@
 -- Database Update SQL for User Profiles Enhancement
 -- This adds necessary columns for the enhanced sign up form
+-- NOTE: Skip the auth.users RLS - Supabase manages that table and you don't have owner permissions
 
 -- First, let's check if user_profiles table exists and add missing columns
 DO $$ 
@@ -94,3 +95,13 @@ COMMENT ON TABLE user_profiles IS 'Extended user profile information beyond Supa
 COMMENT ON COLUMN user_profiles.full_name IS 'User full name (First Last)';
 COMMENT ON COLUMN user_profiles.phone_number IS 'User phone number for contact';
 COMMENT ON COLUMN user_profiles.email IS 'User email (duplicate of auth.users.email for easier queries)';
+
+-- IMPORTANT NOTE ABOUT auth.users RLS ERROR:
+-- The error "must be owner of table users" occurs because:
+-- 1. Supabase manages the auth.users table
+-- 2. You don't have owner permissions on system tables
+-- 3. RLS is already properly configured by Supabase for auth.users
+-- 
+-- SOLUTION: Simply skip the "ALTER TABLE auth.users ENABLE ROW LEVEL SECURITY;" line
+-- Supabase has already configured RLS on auth.users properly for you.
+-- You only need to manage RLS on your own tables (like user_profiles above).

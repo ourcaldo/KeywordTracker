@@ -1,7 +1,9 @@
-import { supabase, KeywordWithRanking, Site, Workspace, UserProfile } from '@/lib/database'
+import { createClient } from '@/lib/supabase/client'
+import { KeywordWithRanking, Site, Workspace, UserProfile } from '@/lib/database'
 
 export class DashboardService {
   static async getUserProfile(userId: string): Promise<UserProfile | null> {
+    const supabase = createClient()
     const { data, error } = await supabase
       .from('user_profiles')
       .select('*')
@@ -17,6 +19,7 @@ export class DashboardService {
   }
 
   static async getUserWorkspaces(userId: string): Promise<Workspace[]> {
+    const supabase = createClient()
     const { data, error } = await supabase
       .from('workspaces')
       .select('*')
@@ -32,6 +35,7 @@ export class DashboardService {
   }
 
   static async getWorkspaceSites(workspaceId: string, userId: string): Promise<Site[]> {
+    const supabase = createClient()
     const { data, error } = await supabase
       .from('sites')
       .select('*')
@@ -48,6 +52,7 @@ export class DashboardService {
   }
 
   static async getSiteKeywords(siteId: string, userId: string): Promise<KeywordWithRanking[]> {
+    const supabase = createClient()
     const { data, error } = await supabase
       .from('keywords_with_latest_rankings')
       .select('*')
@@ -119,6 +124,7 @@ export class DashboardService {
   }
 
   static async createWorkspace(userId: string, name: string, description?: string): Promise<Workspace | null> {
+    const supabase = createClient()
     const { data, error } = await supabase
       .from('workspaces')
       .insert({
@@ -138,6 +144,7 @@ export class DashboardService {
   }
 
   static async createSite(workspaceId: string, userId: string, domain: string, name: string, location = 'US'): Promise<Site | null> {
+    const supabase = createClient()
     const { data, error } = await supabase
       .from('sites')
       .insert({

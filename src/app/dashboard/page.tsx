@@ -151,14 +151,14 @@ export default function DashboardPage() {
         <DashboardLayout>
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">✅ Workspace Ready!</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Workspace Ready!</h2>
               <p className="text-lg text-gray-700 mb-2">Your workspace "{workspaces[0].name}" is all set</p>
               <p className="text-gray-500 mb-8">Now add your first domain to start tracking keywords and monitor your search rankings.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
                 onClick={() => setShowSiteForm(true)}
               >
-🌐 Add Your First Domain
+Add Your First Domain
               </Button>
             </div>
           </div>
@@ -170,17 +170,20 @@ export default function DashboardPage() {
         <DashboardLayout>
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">🚀 Ready to Track Your Rankings?</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Ready to Track Your Rankings?</h2>
               <p className="text-lg text-gray-700 mb-2">Create your first workspace to get started</p>
               <p className="text-gray-500 mb-8">Organize your SEO projects, track keywords, and monitor your search engine rankings in one powerful dashboard.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
                 onClick={() => {
-                  console.log('Opening workspace form')
-                  setShowWorkspaceForm(true)
+                  console.log('Opening workspace form, current state:', showWorkspaceForm)
+                  setShowWorkspaceForm(prev => {
+                    console.log('State transition from', prev, 'to true')
+                    return true
+                  })
                 }}
               >
-🎯 Create Your First Workspace
+Create Your First Workspace
               </Button>
             </div>
           </div>
@@ -407,7 +410,6 @@ export default function DashboardPage() {
                         </td>
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs">🇺🇸</span>
                             <span className="text-sm">{keyword.latest_location || 'United States (EN)'}</span>
                           </div>
                         </td>
@@ -427,7 +429,10 @@ export default function DashboardPage() {
       {/* Forms */}
       <WorkspaceForm
         isOpen={showWorkspaceForm}
-        onClose={() => setShowWorkspaceForm(false)}
+        onClose={() => {
+          console.log('Closing workspace form')
+          setShowWorkspaceForm(false)
+        }}
         onSubmit={handleCreateWorkspace}
         loading={formLoading}
       />

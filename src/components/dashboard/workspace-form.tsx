@@ -35,7 +35,7 @@ export function WorkspaceForm({ isOpen, onClose, onSubmit, loading = false }: Wo
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-white border border-gray-200 shadow-lg">
+      <DialogContent className="sm:max-w-md bg-white border border-gray-200 shadow-lg" style={{ zIndex: 9999 }}>
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-gray-900">
             Create New Workspace

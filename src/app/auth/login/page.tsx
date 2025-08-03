@@ -1,11 +1,11 @@
 /**
- * Modern Login/Signup Page
+ * Modern Login/Signup Page - Fully Responsive
  * Elegant design inspired by modern SaaS platforms
  */
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -19,8 +19,19 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -75,7 +86,8 @@ export default function LoginPage() {
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      display: 'flex'
+      display: 'flex',
+      flexDirection: isMobile ? 'column' : 'row'
     }}>
       {/* Left Side - Form */}
       <div style={{
@@ -83,36 +95,39 @@ export default function LoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '2rem',
-        maxWidth: '50%'
+        padding: isMobile ? '1rem' : '2rem',
+        width: '100%',
+        minHeight: isMobile ? '100vh' : 'auto'
       }}>
         <div style={{
           backgroundColor: 'white',
-          borderRadius: '24px',
-          padding: '3rem',
+          borderRadius: isMobile ? '16px' : '24px',
+          padding: isMobile ? '1.5rem' : '3rem',
           width: '100%',
-          maxWidth: '440px',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          maxWidth: isMobile ? '100%' : '440px',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          margin: isMobile ? '0.5rem' : '0'
         }}>
           {/* Header */}
-          <div style={{ marginBottom: '2rem' }}>
+          <div style={{ marginBottom: isMobile ? '1.5rem' : '2rem', textAlign: 'center' }}>
             <div style={{
-              width: '48px',
-              height: '48px',
+              width: isMobile ? '40px' : '48px',
+              height: isMobile ? '40px' : '48px',
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: '1.5rem'
+              marginBottom: '1.5rem',
+              margin: '0 auto 1.5rem auto'
             }}>
-              <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+              <svg width={isMobile ? "20" : "24"} height={isMobile ? "20" : "24"} fill="white" viewBox="0 0 24 24">
                 <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
               </svg>
             </div>
             
             <h1 style={{
-              fontSize: '28px',
+              fontSize: isMobile ? '24px' : '28px',
               fontWeight: '700',
               color: '#1f2937',
               marginBottom: '0.5rem'
@@ -122,7 +137,8 @@ export default function LoginPage() {
             
             <p style={{
               color: '#6b7280',
-              fontSize: '16px'
+              fontSize: isMobile ? '14px' : '16px',
+              lineHeight: '1.5'
             }}>
               {isSignUp ? 'See your growth and get consulting support!' : 'Enter your email and password to access your account.'}
             </p>
@@ -133,11 +149,11 @@ export default function LoginPage() {
             type="button"
             style={{
               width: '100%',
-              padding: '12px',
+              padding: isMobile ? '10px' : '12px',
               border: '1px solid #e5e7eb',
               borderRadius: '12px',
               backgroundColor: 'white',
-              fontSize: '16px',
+              fontSize: isMobile ? '14px' : '16px',
               fontWeight: '500',
               color: '#374151',
               cursor: 'pointer',
@@ -145,10 +161,11 @@ export default function LoginPage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '12px'
+              gap: '12px',
+              transition: 'all 0.2s ease'
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24">
+            <svg width={isMobile ? "18" : "20"} height={isMobile ? "18" : "20"} viewBox="0 0 24 24">
               <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
               <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -164,7 +181,7 @@ export default function LoginPage() {
             marginBottom: '1.5rem'
           }}>
             <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }}></div>
-            <span style={{ padding: '0 1rem', color: '#9ca3af', fontSize: '14px' }}>
+            <span style={{ padding: '0 1rem', color: '#9ca3af', fontSize: isMobile ? '12px' : '14px' }}>
               or {isSignUp ? 'Sign up' : 'Sign in'} with Email
             </span>
             <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }}></div>
@@ -190,10 +207,10 @@ export default function LoginPage() {
                   placeholder="Full Name"
                   style={{
                     width: '100%',
-                    padding: '12px 16px',
+                    padding: isMobile ? '10px 14px' : '12px 16px',
                     border: '1px solid #d1d5db',
                     borderRadius: '12px',
-                    fontSize: '16px',
+                    fontSize: isMobile ? '14px' : '16px',
                     outline: 'none',
                     transition: 'border-color 0.2s'
                   }}
@@ -222,10 +239,10 @@ export default function LoginPage() {
                 placeholder="mail@website.com"
                 style={{
                   width: '100%',
-                  padding: '12px 16px',
+                  padding: isMobile ? '10px 14px' : '12px 16px',
                   border: '1px solid #d1d5db',
                   borderRadius: '12px',
-                  fontSize: '16px',
+                  fontSize: isMobile ? '14px' : '16px',
                   outline: 'none',
                   transition: 'border-color 0.2s'
                 }}
@@ -254,10 +271,10 @@ export default function LoginPage() {
                   placeholder="+1 (555) 000-0000"
                   style={{
                     width: '100%',
-                    padding: '12px 16px',
+                    padding: isMobile ? '10px 14px' : '12px 16px',
                     border: '1px solid #d1d5db',
                     borderRadius: '12px',
-                    fontSize: '16px',
+                    fontSize: isMobile ? '14px' : '16px',
                     outline: 'none',
                     transition: 'border-color 0.2s'
                   }}
@@ -286,11 +303,11 @@ export default function LoginPage() {
                   placeholder="Min. 8 character"
                   style={{
                     width: '100%',
-                    padding: '12px 16px',
-                    paddingRight: '48px',
+                    padding: isMobile ? '10px 14px' : '12px 16px',
+                    paddingRight: isMobile ? '40px' : '48px',
                     border: '1px solid #d1d5db',
                     borderRadius: '12px',
-                    fontSize: '16px',
+                    fontSize: isMobile ? '14px' : '16px',
                     outline: 'none',
                     transition: 'border-color 0.2s'
                   }}
@@ -372,13 +389,14 @@ export default function LoginPage() {
                 width: '100%',
                 background: loading ? '#9ca3af' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 color: 'white',
-                padding: '14px',
+                padding: isMobile ? '12px' : '14px',
                 border: 'none',
                 borderRadius: '12px',
-                fontSize: '16px',
+                fontSize: isMobile ? '14px' : '16px',
                 fontWeight: '600',
                 cursor: loading ? 'not-allowed' : 'pointer',
-                marginBottom: '1.5rem'
+                marginBottom: '1.5rem',
+                transition: 'all 0.2s ease'
               }}
             >
               {loading 
@@ -414,103 +432,105 @@ export default function LoginPage() {
           {/* Footer */}
           <div style={{
             textAlign: 'center',
-            marginTop: '2rem',
+            marginTop: isMobile ? '1.5rem' : '2rem',
             paddingTop: '1.5rem',
             borderTop: '1px solid #f3f4f6'
           }}>
-            <p style={{ color: '#9ca3af', fontSize: '12px' }}>
+            <p style={{ color: '#9ca3af', fontSize: isMobile ? '11px' : '12px' }}>
               ©2025 Keyword Tracker. All rights reserved.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Right Side - Hero/Branding */}
-      <div style={{
-        flex: 1,
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white',
-        padding: '3rem',
-        position: 'relative',
-        overflow: 'hidden'
-      }} className="hidden lg:flex">
-        {/* Background Pattern */}
+      {/* Right Side - Hero/Branding - Desktop Only */}
+      {!isMobile && (
         <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.1,
-          backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(255,255,255,.1) 50px, rgba(255,255,255,.1) 100px)',
-        }}></div>
-        
-        <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-          <h2 style={{
-            fontSize: '48px',
-            fontWeight: '700',
-            marginBottom: '1.5rem',
-            lineHeight: '1.1'
-          }}>
-            Effortlessly manage your SEO rankings
-          </h2>
-          
-          <p style={{
-            fontSize: '20px',
-            opacity: 0.9,
-            marginBottom: '3rem',
-            maxWidth: '500px'
-          }}>
-            Track your keywords and monitor your website's performance with our professional SEO dashboard.
-          </p>
-
-          {/* Feature Cards */}
+          flex: 1,
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          padding: '3rem',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Background Pattern */}
           <div style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.15)',
-            borderRadius: '20px',
-            padding: '2rem',
-            maxWidth: '400px',
-            margin: '0 auto',
-            backdropFilter: 'blur(10px)'
-          }}>
-            <div style={{ marginBottom: '1rem' }}>
-              <div style={{
-                fontSize: '32px',
-                fontWeight: '700',
-                color: '#fff'
-              }}>
-                1,000+
-              </div>
-              <div style={{ fontSize: '16px', opacity: 0.8 }}>Keywords Tracked</div>
-            </div>
-            
-            <div style={{
-              height: '1px',
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              margin: '1rem 0'
-            }}></div>
-            
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
-              fontSize: '14px'
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            opacity: 0.1,
+            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(255,255,255,.1) 50px, rgba(255,255,255,.1) 100px)',
+          }}></div>
+          
+          <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+            <h2 style={{
+              fontSize: '48px',
+              fontWeight: '700',
+              marginBottom: '1.5rem',
+              lineHeight: '1.1'
             }}>
-              <div>
-                <div style={{ fontWeight: '600' }}>Real-time</div>
-                <div style={{ opacity: 0.8 }}>Monitoring</div>
+              Effortlessly manage your SEO rankings
+            </h2>
+            
+            <p style={{
+              fontSize: '20px',
+              opacity: 0.9,
+              marginBottom: '3rem',
+              maxWidth: '500px'
+            }}>
+              Track your keywords and monitor your website's performance with our professional SEO dashboard.
+            </p>
+
+            {/* Feature Cards */}
+            <div style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
+              borderRadius: '20px',
+              padding: '2rem',
+              maxWidth: '400px',
+              margin: '0 auto',
+              backdropFilter: 'blur(10px)'
+            }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <div style={{
+                  fontSize: '32px',
+                  fontWeight: '700',
+                  color: '#fff'
+                }}>
+                  1,000+
+                </div>
+                <div style={{ fontSize: '16px', opacity: 0.8 }}>Keywords Tracked</div>
               </div>
-              <div>
-                <div style={{ fontWeight: '600' }}>Advanced</div>
-                <div style={{ opacity: 0.8 }}>Analytics</div>
+              
+              <div style={{
+                height: '1px',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                margin: '1rem 0'
+              }}></div>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '1rem',
+                fontSize: '14px'
+              }}>
+                <div>
+                  <div style={{ fontWeight: '600' }}>Real-time</div>
+                  <div style={{ opacity: 0.8 }}>Monitoring</div>
+                </div>
+                <div>
+                  <div style={{ fontWeight: '600' }}>Advanced</div>
+                  <div style={{ opacity: 0.8 }}>Analytics</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

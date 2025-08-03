@@ -378,23 +378,23 @@ export default function DashboardPage() {
         {/* Filters */}
         <div className="flex items-center gap-4 py-4">
           <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-gray-500" />
-            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
+            <Filter className="h-4 w-4 text-gray-400" />
+            <Button variant="outline" size="sm" className="bg-gray-700 hover:bg-gray-600 border-gray-600 text-white">
               Tags <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
+            <Button variant="outline" size="sm" className="bg-gray-700 hover:bg-gray-600 border-gray-600 text-white">
               Locations <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
+            <Button variant="outline" size="sm" className="bg-gray-700 hover:bg-gray-600 border-gray-600 text-white">
               Positions <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
+            <Button variant="outline" size="sm" className="bg-gray-700 hover:bg-gray-600 border-gray-600 text-white">
               Volume <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
+            <Button variant="outline" size="sm" className="bg-gray-700 hover:bg-gray-600 border-gray-600 text-white">
               Traffic <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
+            <Button variant="outline" size="sm" className="bg-gray-700 hover:bg-gray-600 border-gray-600 text-white">
               KD <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
           </div>
@@ -404,98 +404,98 @@ export default function DashboardPage() {
               <input
                 type="text"
                 placeholder="Search keywords"
-                className="w-full pl-10 pr-4 py-2 bg-white/30 backdrop-blur-md border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50"
+                className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400"
               />
             </div>
           </div>
         </div>
 
-        {/* Stats Cards with Glass Effects */}
+        {/* Stats Cards with Gradient Colors */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 shadow-lg text-white">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-600">VISIBILITY</h3>
-              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              <h3 className="text-sm font-medium text-blue-100">VISIBILITY</h3>
+              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900">{stats?.visibility || 0}%</div>
+            <div className="text-2xl font-bold text-white">{stats?.visibility || 0}%</div>
             <div className="flex items-center mt-2">
-              <span className="text-sm text-green-600">+1.34</span>
-              <span className="text-sm text-gray-500 ml-1">1.34%</span>
+              <span className="text-sm text-green-200">+1.34</span>
+              <span className="text-sm text-blue-100 ml-1">1.34%</span>
             </div>
           </div>
 
-          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 shadow-lg text-white">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-600">TRAFFIC</h3>
-              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              <h3 className="text-sm font-medium text-green-100">TRAFFIC</h3>
+              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900">{stats?.traffic?.toLocaleString() || '0'}</div>
+            <div className="text-2xl font-bold text-white">{stats?.traffic?.toLocaleString() || '0'}</div>
             <div className="flex items-center mt-2">
-              <span className="text-sm text-green-600">+126</span>
-              <span className="text-sm text-gray-500 ml-1">2.1%</span>
+              <span className="text-sm text-green-200">+126</span>
+              <span className="text-sm text-green-100 ml-1">2.1%</span>
             </div>
           </div>
 
-          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
+          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 shadow-lg text-white">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-600">AVERAGE POSITION</h3>
-              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              <h3 className="text-sm font-medium text-orange-100">AVERAGE POSITION</h3>
+              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900">{stats?.averagePosition || '0.00'}</div>
+            <div className="text-2xl font-bold text-white">{stats?.averagePosition || '0.00'}</div>
             <div className="flex items-center mt-2">
-              <span className="text-sm text-red-600">+2.65</span>
-              <span className="text-sm text-gray-500 ml-1">2.65%</span>
+              <span className="text-sm text-red-200">+2.65</span>
+              <span className="text-sm text-orange-100 ml-1">2.65%</span>
             </div>
           </div>
 
-          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 shadow-lg text-white">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-600">SERP FEATURES</h3>
-              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              <h3 className="text-sm font-medium text-purple-100">SERP FEATURES</h3>
+              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900">{stats?.serpFeatures || 0}</div>
+            <div className="text-2xl font-bold text-white">{stats?.serpFeatures || 0}</div>
             <div className="flex items-center mt-2">
-              <span className="text-sm text-green-600">+90</span>
-              <span className="text-sm text-gray-500 ml-1">26.6%</span>
+              <span className="text-sm text-green-200">+90</span>
+              <span className="text-sm text-purple-100 ml-1">26.6%</span>
             </div>
           </div>
 
-          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
+          <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl p-6 shadow-lg text-white">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium text-gray-600">RANK DISTRIBUTIONS</h3>
-              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              <h3 className="text-sm font-medium text-pink-100">RANK DISTRIBUTIONS</h3>
+              <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
             </div>
             <div className="flex items-center gap-1 mt-2">
-              <span className="text-sm text-green-600">↑{stats?.rankDistribution?.['1-3'] || 0}</span>
-              <span className="text-xs text-gray-500">1-3</span>
-              <span className="text-sm text-red-600 ml-2">↓{stats?.rankDistribution?.['4-10'] || 0}</span>
-              <span className="text-xs text-gray-500">4-10</span>
+              <span className="text-sm text-green-200">↑{stats?.rankDistribution?.['1-3'] || 0}</span>
+              <span className="text-xs text-pink-100">1-3</span>
+              <span className="text-sm text-red-200 ml-2">↓{stats?.rankDistribution?.['4-10'] || 0}</span>
+              <span className="text-xs text-pink-100">4-10</span>
             </div>
           </div>
         </div>
 
         {/* Keywords Table */}
-        <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl shadow-lg">
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-xl border border-gray-700">
           <div className="p-6">
             <div className="flex items-center gap-4 mb-6">
-              <Button variant="ghost" size="sm" className="bg-blue-50/80 backdrop-blur-sm text-blue-600">Top 100</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 50</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 20</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 10</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 5</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 3</Button>
+              <Button variant="ghost" size="sm" className="bg-blue-600 text-white">Top 100</Button>
+              <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-gray-700">Top 50</Button>
+              <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-gray-700">Top 20</Button>
+              <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-gray-700">Top 10</Button>
+              <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-gray-700">Top 5</Button>
+              <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-gray-700">Top 3</Button>
               <div className="flex-1"></div>
-              <Button variant="outline" size="sm" className="bg-white/50 backdrop-blur-sm border-white/20">
+              <Button variant="outline" size="sm" className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600">
                 Export All
               </Button>
               <Button className="bg-blue-600 hover:bg-blue-700" size="sm">

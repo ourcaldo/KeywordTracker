@@ -15,6 +15,10 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<string>('')
+  const [workspaces, setWorkspaces] = useState<any[]>([])
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [showWorkspaceForm, setShowWorkspaceForm] = useState(false)
+  const [showSiteForm, setShowSiteForm] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -41,15 +45,21 @@ export default function DashboardPage() {
 
   const loadDashboardData = async (userId: string) => {
     try {
+      // Get user profile
+      const profile = await DashboardService.getUserProfile(userId)
+      setUserProfile(profile)
+
       // Get user's workspaces
-      const workspaces = await DashboardService.getUserWorkspaces(userId)
-      if (workspaces.length === 0) {
+      const userWorkspaces = await DashboardService.getUserWorkspaces(userId)
+      setWorkspaces(userWorkspaces)
+      
+      if (userWorkspaces.length === 0) {
         setLoading(false)
         return
       }
 
       // Get sites from the first workspace
-      const sites = await DashboardService.getWorkspaceSites(workspaces[0].id, userId)
+      const sites = await DashboardService.getWorkspaceSites(userWorkspaces[0].id, userId)
       if (sites.length === 0) {
         setLoading(false)
         return
@@ -74,6 +84,33 @@ export default function DashboardPage() {
     }
   }
 
+  const handleCreateWorkspace = async () => {
+    if (!user) return
+    
+    const workspaceName = prompt('Enter workspace name (e.g., "My SEO Project"):')
+    if (!workspaceName) return
+
+    const workspace = await DashboardService.createWorkspace(user.id, workspaceName)
+    if (workspace) {
+      setWorkspaces([workspace])
+      // Refresh the page to show the "add domain" state
+      window.location.reload()
+    }
+  }
+
+  const handleAddSite = async () => {
+    if (!user || workspaces.length === 0) return
+    
+    const domain = prompt('Enter domain name (e.g., tesla.com):')
+    if (!domain) return
+
+    const site = await DashboardService.createSite(workspaces[0].id, user.id, domain, domain)
+    if (site) {
+      setCurrentSite(site)
+      await loadDashboardData(user.id)
+    }
+  }
+
   const handleRefresh = () => {
     if (user) {
       setLoading(true)
@@ -95,18 +132,43 @@ export default function DashboardPage() {
   }
 
   if (!currentSite) {
-    return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-96">
-          <div className="text-center">
-            <p className="text-gray-600 mb-4">No sites found. Create a workspace and add your first domain to get started.</p>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              Add Your First Domain
-            </Button>
+    // Check if user has workspaces but no sites
+    if (workspaces.length > 0) {
+      return (
+        <DashboardLayout>
+          <div className="flex items-center justify-center h-96">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">Great! You have a workspace: "{workspaces[0].name}"</p>
+              <p className="text-sm text-gray-500 mb-6">Now add your first domain to start tracking keywords and rankings.</p>
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleAddSite}
+              >
+                Add Your First Domain
+              </Button>
+            </div>
           </div>
-        </div>
-      </DashboardLayout>
-    )
+        </DashboardLayout>
+      )
+    } else {
+      // No workspaces yet
+      return (
+        <DashboardLayout>
+          <div className="flex items-center justify-center h-96">
+            <div className="text-center">
+              <p className="text-gray-600 mb-4">Welcome! Let's get you started by creating your first workspace.</p>
+              <p className="text-sm text-gray-500 mb-6">A workspace helps you organize your SEO projects. You can add multiple domains to each workspace.</p>
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleCreateWorkspace}
+              >
+                Create Your First Workspace
+              </Button>
+            </div>
+          </div>
+        </DashboardLayout>
+      )
+    }
   }
 
   return (

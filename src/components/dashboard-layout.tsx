@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { DashboardService } from '@/services/dashboard.service'
 import { Button } from '@/components/ui/button'
 import { 
   LayoutDashboard, 
@@ -20,8 +21,25 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [userProfile, setUserProfile] = useState<any>(null)
   const router = useRouter()
   const supabase = createClient()
+
+  useEffect(() => {
+    loadUserProfile()
+  }, [])
+
+  const loadUserProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const profile = await DashboardService.getUserProfile(user.id)
+        setUserProfile(profile)
+      }
+    } catch (error) {
+      console.error('Error loading user profile:', error)
+    }
+  }
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -134,7 +152,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </nav>
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700">
+              <Button 
+                variant="default" 
+                size="sm" 
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={() => {
+                  // This will be handled by the dashboard page
+                  window.location.reload()
+                }}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Domain
               </Button>
@@ -143,9 +169,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </Button>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-medium text-sm">U</span>
+                  <span className="text-white font-medium text-sm">
+                    {userProfile?.full_name ? userProfile.full_name.charAt(0).toUpperCase() : 'U'}
+                  </span>
                 </div>
-                <span className="text-sm font-medium text-gray-700">User</span>
+                <span className="text-sm font-medium text-gray-700">
+                  {userProfile?.full_name || userProfile?.email || 'User'}
+                </span>
               </div>
             </div>
           </div>

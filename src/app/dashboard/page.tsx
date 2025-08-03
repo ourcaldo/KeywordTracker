@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardLayout } from '@/components/dashboard-layout'
 // import { WorkspaceForm } from '@/components/dashboard/workspace-form' // Not needed anymore
-import { SiteForm } from '@/components/dashboard/site-form'
+// import { SiteForm } from '@/components/dashboard/site-form' // Not needed anymore
 import { Button } from '@/components/ui/button'
 import { ChevronDown, RefreshCw, Search, Filter } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -158,8 +158,82 @@ export default function DashboardPage() {
                 className="bg-blue-600 hover:bg-blue-700"
                 onClick={() => setShowSiteForm(true)}
               >
-Add Your First Domain
+                Add Your First Domain
               </Button>
+              
+              {/* Show domain modal directly here if state is true */}
+              {showSiteForm && (
+                <div 
+                  className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                  onClick={() => setShowSiteForm(false)}
+                >
+                  <div 
+                    className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 border border-gray-200"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Add Domain Site</h2>
+                    <p className="text-gray-600 mb-4">Add a domain to track keywords and monitor rankings.</p>
+                    
+                    <form onSubmit={(e) => {
+                      e.preventDefault()
+                      const formData = new FormData(e.target as HTMLFormElement)
+                      const domain = formData.get('domain') as string
+                      const name = formData.get('name') as string
+                      
+                      if (domain.trim() && name.trim()) {
+                        handleAddSite(domain.trim(), name.trim(), 'US')
+                      }
+                    }} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Domain *
+                        </label>
+                        <input
+                          name="domain"
+                          type="text"
+                          placeholder="e.g., example.com"
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                          required
+                          disabled={formLoading}
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Site Name *
+                        </label>
+                        <input
+                          name="name"
+                          type="text"
+                          placeholder="e.g., My Website"
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                          required
+                          disabled={formLoading}
+                        />
+                      </div>
+                      
+                      <div className="flex gap-3 pt-4">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setShowSiteForm(false)}
+                          disabled={formLoading}
+                          className="bg-white border-gray-200 flex-1"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="submit"
+                          disabled={formLoading}
+                          className="bg-blue-600 hover:bg-blue-700 flex-1"
+                        >
+                          {formLoading ? 'Adding...' : 'Add Domain'}
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </DashboardLayout>
@@ -175,10 +249,7 @@ Add Your First Domain
               <p className="text-gray-500 mb-8">Organize your SEO projects, track keywords, and monitor your search engine rankings in one powerful dashboard.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => {
-                  console.log('BUTTON CLICKED - SETTING STATE TO TRUE')
-                  setShowWorkspaceForm(true)
-                }}
+                onClick={() => setShowWorkspaceForm(true)}
               >
                 Create Your First Workspace
               </Button>
@@ -496,15 +567,7 @@ Add Your First Domain
         </div>
       </div>
 
-      {/* Forms */}
-      
-      <SiteForm
-        isOpen={showSiteForm}
-        onClose={() => setShowSiteForm(false)}
-        onSubmit={handleAddSite}
-        loading={formLoading}
-        workspaceName={workspaces[0]?.name}
-      />
+      {/* Forms - No longer needed as modals are inline */}
     </DashboardLayout>
   )
 }

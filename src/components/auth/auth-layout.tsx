@@ -15,15 +15,14 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-white">
       <div className="flex min-h-screen">
         {/* Left side - Branding */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 relative overflow-hidden">
-          <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-          <div className="relative z-10 flex items-center justify-center p-12">
-            <div className="text-center text-white">
-              <div className="mb-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 relative">
+          <div className="relative z-10 flex items-center justify-center p-12 w-full">
+            <div className="text-center text-white max-w-md">
+              <div className="mb-12">
+                <div className="w-16 h-16 mx-auto mb-6 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
                   <svg 
                     className="w-8 h-8 text-white" 
                     fill="none" 
@@ -39,44 +38,40 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
                   </svg>
                 </div>
                 <h1 className="text-4xl font-bold mb-4">Keyword Tracker</h1>
-                <p className="text-xl text-blue-100 max-w-md">
+                <p className="text-xl text-blue-100">
                   Professional SEO keyword tracking and ranking monitoring
                 </p>
               </div>
               
-              <div className="space-y-6 text-left max-w-md">
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full mt-3"></div>
+              <div className="space-y-6 text-left">
+                <div className="flex items-start space-x-4">
+                  <div className="w-2 h-2 bg-blue-300 rounded-full mt-3 flex-shrink-0"></div>
                   <div>
-                    <h3 className="font-semibold text-blue-100">Real-time Monitoring</h3>
+                    <h3 className="font-semibold text-blue-100 mb-1">Real-time Monitoring</h3>
                     <p className="text-blue-200 text-sm">Track keyword positions across search engines</p>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full mt-3"></div>
+                <div className="flex items-start space-x-4">
+                  <div className="w-2 h-2 bg-blue-300 rounded-full mt-3 flex-shrink-0"></div>
                   <div>
-                    <h3 className="font-semibold text-blue-100">Advanced Analytics</h3>
+                    <h3 className="font-semibold text-blue-100 mb-1">Advanced Analytics</h3>
                     <p className="text-blue-200 text-sm">Detailed insights and performance metrics</p>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full mt-3"></div>
+                <div className="flex items-start space-x-4">
+                  <div className="w-2 h-2 bg-blue-300 rounded-full mt-3 flex-shrink-0"></div>
                   <div>
-                    <h3 className="font-semibold text-blue-100">Multi-site Management</h3>
+                    <h3 className="font-semibold text-blue-100 mb-1">Multi-site Management</h3>
                     <p className="text-blue-200 text-sm">Organize and track multiple websites</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white bg-opacity-10 rounded-full -translate-y-32 translate-x-32"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white bg-opacity-10 rounded-full translate-y-24 -translate-x-24"></div>
         </div>
 
         {/* Right side - Form */}
-        <div className="flex-1 flex items-center justify-center p-8">
+        <div className="flex-1 flex items-center justify-center p-8 bg-gray-50 lg:bg-white">
           <div className="w-full max-w-md">
             <div className="text-center mb-8 lg:hidden">
               <div className="w-12 h-12 mx-auto mb-4 bg-blue-600 rounded-xl flex items-center justify-center">

@@ -91,28 +91,38 @@ export default function AuthenticationPage() {
 
     try {
       if (isSignUp) {
-        // Use server-side API route for detailed logging
-        const response = await fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            firstName,
-            lastName,
-            phoneNumber
-          })
+        // Create user account with Supabase Auth ONLY - no database trigger
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              display_name: firstName,
+              first_name: firstName,
+              last_name: lastName,
+              phone: phoneNumber
+            }
+          }
         })
 
-        const result = await response.json()
+        if (error) throw error
 
-        if (!response.ok) {
-          throw new Error(result.error || 'Signup failed')
-        }
-
-        if (result.success) {
+        if (data.user) {
+          // Manually create user profile since trigger is broken
+          const { error: profileError } = await supabase.from('user_profiles').insert({
+            user_id: data.user.id,
+            first_name: firstName,
+            last_name: lastName,
+            phone_number: phoneNumber,
+            email: email,
+            plan: 'free'
+          })
+          
+          if (profileError) {
+            console.error('Profile creation error:', profileError)
+            // Continue anyway - user was created in auth
+          }
+          
           router.push('/dashboard')
         }
       } else {

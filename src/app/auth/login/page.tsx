@@ -108,15 +108,7 @@ export default function AuthenticationPage() {
         if (error) throw error
 
         if (data.user) {
-          // Create extended user profile in our custom table
-          await supabase.from('user_profiles').insert({
-            user_id: data.user.id,
-            first_name: firstName,
-            last_name: lastName,
-            phone_number: phoneNumber,
-            email: email
-          })
-          
+          // User profile will be automatically created by database trigger
           router.push('/dashboard')
         }
       } else {

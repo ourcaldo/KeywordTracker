@@ -1,46 +1,41 @@
+# IMPORTANT: DATABASE & SECRETS
+
+This project uses Supabase for database and authentication. **NEVER ASK FOR DATABASE_URL OR ANY SECRETS**. All secrets are loaded from .env.example that is copied as .env. If database updates are needed, provide SQL queries in the conversation - you do not have direct access to Supabase.
+
 # Overview
 
 This project is a keyword tracking SEO application built with Next.js and TypeScript. Its primary purpose is to help users monitor and analyze their SEO rankings by tracking keyword performance over time. Key capabilities include a modern web interface, robust authentication, and a dashboard for managing keyword tracking activities. The application aims to provide a comprehensive solution for SEO professionals and businesses to gain insights into their search engine visibility.
+
+## Database Schema (Supabase)
+
+### Core Tables
+- `user_profiles` - User information with first_name, last_name, email, phone_number, plan
+- `workspaces` - User workspaces for organizing SEO projects  
+- `sites` - Domain sites within workspaces
+- `keywords` - Keywords to track for each site
+- `keyword_rankings` - Historical ranking data for keywords
+
+### Key Relationships
+- Users → Workspaces (1:many)
+- Workspaces → Sites (1:many) 
+- Sites → Keywords (1:many)
+- Keywords → Rankings (1:many)
+
+### Critical Workflow
+1. User must create workspace first
+2. Then add domain sites within workspace
+3. Then add keywords to track for each site
 
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
 
-Database preferences: 
-- Use Supabase directly through the dashboard/SQL editor
-- Never ask for DATABASE_URL secret - work with existing .env setup
-- Provide SQL queries directly in chat when database changes are needed
-- User profiles use first_name and last_name (not full_name)
-- Display name should be first_name only
-
-# Recent Changes & Progress
-
-## Authentication System Updates
-- Fixed signup form to use first_name and last_name instead of full_name
-- Updated user profile display to show first_name only
-- Fixed 500 Internal Server Error during signup
-- Database schema updated for first_name/last_name columns
-
-## Dashboard & UI Improvements
-- Replaced ugly prompt() dialogs with beautiful modal forms
-- Fixed workspace creation flow - users must create workspace first, then add domains
-- Fixed modal display issues with proper CSS classes
-- Maintained white background with glass effects design
-- Icon-only sidebar working properly
-
-## Database Schema Updates Required
-Run these SQL queries in Supabase SQL editor:
-```sql
-ALTER TABLE user_profiles DROP COLUMN IF EXISTS full_name;
-ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS first_name TEXT;
-ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS last_name TEXT;
-```
-
-## Critical Workflow Implementation
-- Workspace creation → Site/domain addition within workspace
-- No domains can be added without workspace creation first
-- Proper modal forms for both workspace and site creation
-- Real Supabase database integration working
+## Design Requirements
+- WHITE background with glass effects (never dark theme)
+- Icon-only sidebar without text labels
+- Tesla.com-style dashboard layout with site domain header on top
+- Beautiful modal forms instead of ugly prompt() dialogs
+- Proper workflow: Create workspace → Add domains within workspace
 
 # System Architecture
 

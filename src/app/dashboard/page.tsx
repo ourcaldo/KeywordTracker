@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardLayout } from '@/components/dashboard-layout'
-import { WorkspaceForm } from '@/components/dashboard/workspace-form'
+// import { WorkspaceForm } from '@/components/dashboard/workspace-form' // Not needed anymore
 import { SiteForm } from '@/components/dashboard/site-form'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, RefreshCw, Search, Filter } from 'lucide-react'
@@ -175,19 +175,86 @@ Add Your First Domain
               <p className="text-gray-500 mb-8">Organize your SEO projects, track keywords, and monitor your search engine rankings in one powerful dashboard.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={(e) => {
-                  e.preventDefault()
-                  console.log('BUTTON CLICKED - Current state:', showWorkspaceForm)
+                onClick={() => {
+                  console.log('BUTTON CLICKED - SETTING STATE TO TRUE')
                   setShowWorkspaceForm(true)
-                  console.log('BUTTON CLICKED - State set to true')
-                  // Force re-render
-                  setTimeout(() => {
-                    console.log('TIMEOUT CHECK - State is now:', showWorkspaceForm)
-                  }, 100)
                 }}
               >
-Create Your First Workspace
+                Create Your First Workspace
               </Button>
+              
+              {/* Show modal directly here if state is true */}
+              {showWorkspaceForm && (
+                <div 
+                  className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                  onClick={() => setShowWorkspaceForm(false)}
+                >
+                  <div 
+                    className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 border border-gray-200"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Create New Workspace</h2>
+                    <p className="text-gray-600 mb-4">A workspace helps you organize your SEO projects.</p>
+                    
+                    <form onSubmit={(e) => {
+                      e.preventDefault()
+                      const formData = new FormData(e.target as HTMLFormElement)
+                      const name = formData.get('name') as string
+                      const description = formData.get('description') as string
+                      
+                      if (name.trim()) {
+                        handleCreateWorkspace(name.trim(), description.trim() || undefined)
+                      }
+                    }} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Workspace Name *
+                        </label>
+                        <input
+                          name="name"
+                          type="text"
+                          placeholder="e.g., My SEO Project"
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                          required
+                          disabled={formLoading}
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Description (Optional)
+                        </label>
+                        <textarea
+                          name="description"
+                          placeholder="Brief description of this workspace..."
+                          rows={3}
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none"
+                          disabled={formLoading}
+                        />
+                      </div>
+                      
+                      <div className="flex gap-3 pt-4">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setShowWorkspaceForm(false)}
+                          disabled={formLoading}
+                          className="bg-white border-gray-200 flex-1"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="submit"
+                          disabled={formLoading}
+                          className="bg-blue-600 hover:bg-blue-700 flex-1"
+                        >
+                          {formLoading ? 'Creating...' : 'Create Workspace'}
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </DashboardLayout>
@@ -430,20 +497,6 @@ Create Your First Workspace
       </div>
 
       {/* Forms */}
-      <div>
-        <p style={{color: 'red', fontSize: '20px', fontWeight: 'bold'}}>
-          DEBUG: showWorkspaceForm = {showWorkspaceForm ? 'TRUE' : 'FALSE'}
-        </p>
-        <WorkspaceForm
-          isOpen={showWorkspaceForm}
-          onClose={() => {
-            console.log('Closing workspace form')
-            setShowWorkspaceForm(false)
-          }}
-          onSubmit={handleCreateWorkspace}
-          loading={formLoading}
-        />
-      </div>
       
       <SiteForm
         isOpen={showSiteForm}

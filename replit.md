@@ -13,6 +13,35 @@ Database preferences:
 - User profiles use first_name and last_name (not full_name)
 - Display name should be first_name only
 
+# Recent Changes & Progress
+
+## Authentication System Updates
+- Fixed signup form to use first_name and last_name instead of full_name
+- Updated user profile display to show first_name only
+- Fixed 500 Internal Server Error during signup
+- Database schema updated for first_name/last_name columns
+
+## Dashboard & UI Improvements
+- Replaced ugly prompt() dialogs with beautiful modal forms
+- Fixed workspace creation flow - users must create workspace first, then add domains
+- Fixed modal display issues with proper CSS classes
+- Maintained white background with glass effects design
+- Icon-only sidebar working properly
+
+## Database Schema Updates Required
+Run these SQL queries in Supabase SQL editor:
+```sql
+ALTER TABLE user_profiles DROP COLUMN IF EXISTS full_name;
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS first_name TEXT;
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS last_name TEXT;
+```
+
+## Critical Workflow Implementation
+- Workspace creation → Site/domain addition within workspace
+- No domains can be added without workspace creation first
+- Proper modal forms for both workspace and site creation
+- Real Supabase database integration working
+
 # System Architecture
 
 ## Frontend

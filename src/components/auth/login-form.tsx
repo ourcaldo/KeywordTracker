@@ -65,9 +65,9 @@ export function LoginForm() {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <Label htmlFor="email" className="text-sm font-medium text-gray-700 block mb-2">
             Email Address
           </Label>
           <Input
@@ -76,14 +76,14 @@ export function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
-            className="h-12"
+            className="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             required
             disabled={loading}
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+        <div>
+          <Label htmlFor="password" className="text-sm font-medium text-gray-700 block mb-2">
             Password
           </Label>
           <div className="relative">
@@ -93,14 +93,14 @@ export function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="h-12 pr-10"
+              className="w-full h-11 px-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               required
               disabled={loading}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               disabled={loading}
             >
               {showPassword ? (
@@ -113,21 +113,21 @@ export function LoginForm() {
         </div>
 
         {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
         )}
 
         <Button 
           type="submit" 
-          className="w-full h-12 text-base font-medium" 
+          className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={loading}
         >
           {loading ? (
-            <>
+            <div className="flex items-center justify-center">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               {isSignUp ? 'Creating Account...' : 'Signing In...'}
-            </>
+            </div>
           ) : (
             isSignUp ? 'Create Account' : 'Sign In'
           )}
@@ -136,24 +136,23 @@ export function LoginForm() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-300" />
+          <div className="w-full border-t border-gray-200"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-2 text-gray-500">or</span>
+          <span className="bg-white px-3 text-gray-500">or</span>
         </div>
       </div>
 
-      <Button
+      <button
         type="button"
-        variant="outline"
-        className="w-full h-12 text-base"
         onClick={() => setIsSignUp(!isSignUp)}
+        className="w-full h-11 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={loading}
       >
         {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
-      </Button>
+      </button>
 
-      <div className="text-center text-sm text-gray-500">
+      <p className="text-center text-xs text-gray-500">
         By continuing, you agree to our{' '}
         <a href="#" className="underline hover:text-gray-700">
           Terms of Service
@@ -162,7 +161,7 @@ export function LoginForm() {
         <a href="#" className="underline hover:text-gray-700">
           Privacy Policy
         </a>
-      </div>
+      </p>
     </div>
   )
 }

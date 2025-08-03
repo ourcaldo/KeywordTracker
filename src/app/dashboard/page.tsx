@@ -379,22 +379,22 @@ export default function DashboardPage() {
         <div className="flex items-center gap-4 py-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-gray-500" />
-            <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm border-gray-200/50">
+            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
               Tags <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm border-gray-200/50">
+            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
               Locations <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm border-gray-200/50">
+            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
               Positions <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm border-gray-200/50">
+            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
               Volume <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm border-gray-200/50">
+            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
               Traffic <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
-            <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm border-gray-200/50">
+            <Button variant="outline" size="sm" className="bg-white/30 backdrop-blur-md border-white/30">
               KD <ChevronDown className="h-3 w-3 ml-1" />
             </Button>
           </div>
@@ -404,7 +404,7 @@ export default function DashboardPage() {
               <input
                 type="text"
                 placeholder="Search keywords"
-                className="w-full pl-10 pr-4 py-2 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50"
+                className="w-full pl-10 pr-4 py-2 bg-white/30 backdrop-blur-md border border-white/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50"
               />
             </div>
           </div>
@@ -412,7 +412,7 @@ export default function DashboardPage() {
 
         {/* Stats Cards with Glass Effects */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl p-6 shadow-sm">
+          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-medium text-gray-600">VISIBILITY</h3>
               <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
@@ -426,7 +426,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl p-6 shadow-sm">
+          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-medium text-gray-600">TRAFFIC</h3>
               <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
@@ -440,7 +440,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl p-6 shadow-sm">
+          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-medium text-gray-600">AVERAGE POSITION</h3>
               <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
@@ -454,7 +454,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl p-6 shadow-sm">
+          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-medium text-gray-600">SERP FEATURES</h3>
               <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
@@ -468,7 +468,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl p-6 shadow-sm">
+          <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl p-6 shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-medium text-gray-600">RANK DISTRIBUTIONS</h3>
               <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
@@ -485,7 +485,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Keywords Table */}
-        <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg">
+        <div className="bg-white/40 backdrop-blur-md border border-white/30 rounded-xl shadow-lg">
           <div className="p-6">
             <div className="flex items-center gap-4 mb-6">
               <Button variant="ghost" size="sm" className="bg-blue-50/80 backdrop-blur-sm text-blue-600">Top 100</Button>

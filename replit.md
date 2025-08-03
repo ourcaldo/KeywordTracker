@@ -26,9 +26,80 @@ This project is a keyword tracking SEO application built with Next.js and TypeSc
 2. Then add domain sites within workspace
 3. Then add keywords to track for each site
 
+| table_name                    | column_name        | data_type                | is_nullable | column_default         |
+| ----------------------------- | ------------------ | ------------------------ | ----------- | ---------------------- |
+| keyword_rankings              | id                 | uuid                     | NO          | gen_random_uuid()      |
+| keyword_rankings              | keyword_id         | uuid                     | NO          | null                   |
+| keyword_rankings              | site_id            | uuid                     | NO          | null                   |
+| keyword_rankings              | workspace_id       | uuid                     | NO          | null                   |
+| keyword_rankings              | user_id            | uuid                     | NO          | null                   |
+| keyword_rankings              | position           | integer                  | YES         | null                   |
+| keyword_rankings              | device             | USER-DEFINED             | NO          | 'desktop'::device_type |
+| keyword_rankings              | location           | text                     | NO          | 'US'::text             |
+| keyword_rankings              | recorded_at        | timestamp with time zone | NO          | null                   |
+| keyword_rankings              | created_at         | timestamp with time zone | NO          | now()                  |
+| keywords                      | id                 | uuid                     | NO          | gen_random_uuid()      |
+| keywords                      | site_id            | uuid                     | NO          | null                   |
+| keywords                      | workspace_id       | uuid                     | NO          | null                   |
+| keywords                      | user_id            | uuid                     | NO          | null                   |
+| keywords                      | keyword            | text                     | NO          | null                   |
+| keywords                      | target_url         | text                     | YES         | null                   |
+| keywords                      | volume             | integer                  | YES         | null                   |
+| keywords                      | created_at         | timestamp with time zone | NO          | now()                  |
+| keywords                      | updated_at         | timestamp with time zone | NO          | now()                  |
+| keywords_with_latest_rankings | id                 | uuid                     | YES         | null                   |
+| keywords_with_latest_rankings | site_id            | uuid                     | YES         | null                   |
+| keywords_with_latest_rankings | workspace_id       | uuid                     | YES         | null                   |
+| keywords_with_latest_rankings | user_id            | uuid                     | YES         | null                   |
+| keywords_with_latest_rankings | keyword            | text                     | YES         | null                   |
+| keywords_with_latest_rankings | target_url         | text                     | YES         | null                   |
+| keywords_with_latest_rankings | volume             | integer                  | YES         | null                   |
+| keywords_with_latest_rankings | created_at         | timestamp with time zone | YES         | null                   |
+| keywords_with_latest_rankings | updated_at         | timestamp with time zone | YES         | null                   |
+| keywords_with_latest_rankings | latest_position    | integer                  | YES         | null                   |
+| keywords_with_latest_rankings | latest_device      | USER-DEFINED             | YES         | null                   |
+| keywords_with_latest_rankings | latest_location    | text                     | YES         | null                   |
+| keywords_with_latest_rankings | latest_recorded_at | timestamp with time zone | YES         | null                   |
+| sites                         | id                 | uuid                     | NO          | gen_random_uuid()      |
+| sites                         | workspace_id       | uuid                     | NO          | null                   |
+| sites                         | user_id            | uuid                     | NO          | null                   |
+| sites                         | domain             | text                     | NO          | null                   |
+| sites                         | name               | text                     | NO          | null                   |
+| sites                         | location           | text                     | NO          | 'US'::text             |
+| sites                         | created_at         | timestamp with time zone | NO          | now()                  |
+| sites                         | updated_at         | timestamp with time zone | NO          | now()                  |
+| user_profiles                 | id                 | uuid                     | NO          | gen_random_uuid()      |
+| user_profiles                 | user_id            | uuid                     | NO          | null                   |
+| user_profiles                 | avatar_url         | text                     | YES         | null                   |
+| user_profiles                 | plan               | USER-DEFINED             | NO          | 'free'::user_plan      |
+| user_profiles                 | created_at         | timestamp with time zone | NO          | now()                  |
+| user_profiles                 | updated_at         | timestamp with time zone | NO          | now()                  |
+| user_profiles                 | phone_number       | text                     | YES         | null                   |
+| user_profiles                 | email              | text                     | YES         | null                   |
+| user_profiles                 | first_name         | text                     | YES         | null                   |
+| user_profiles                 | last_name          | text                     | YES         | null                   |
+| workspace_stats               | id                 | uuid                     | YES         | null                   |
+| workspace_stats               | name               | text                     | YES         | null                   |
+| workspace_stats               | user_id            | uuid                     | YES         | null                   |
+| workspace_stats               | sites_count        | bigint                   | YES         | null                   |
+| workspace_stats               | keywords_count     | bigint                   | YES         | null                   |
+| workspace_stats               | rankings_count     | bigint                   | YES         | null                   |
+| workspaces                    | id                 | uuid                     | NO          | gen_random_uuid()      |
+| workspaces                    | user_id            | uuid                     | NO          | null                   |
+| workspaces                    | name               | text                     | NO          | null                   |
+| workspaces                    | description        | text                     | YES         | null                   |
+| workspaces                    | created_at         | timestamp with time zone | NO          | now()                  |
+| workspaces                    | updated_at         | timestamp with time zone | NO          | now()                  |
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## CRITICAL RULES FOR AGENT BEHAVIOR
+- **NEVER DELETE INFORMATION FROM REPLIT.MD** - Only add information, never remove it
+- **NO DIRECT SUPABASE ACCESS** - Agent does NOT have direct access to Supabase database. Provide SQL queries for user to run manually
+- **MAINTAIN CHANGELOG** - Write all changes with date and detailed information at bottom of replit.md
+- **PRESERVE DOCUMENTATION** - Keep all existing information intact when making updates
 
 ## Design Requirements
 - WHITE background with glass effects (never dark theme)
@@ -93,3 +164,16 @@ Preferred communication style: Simple, everyday language.
 - **date-fns**: Date manipulation.
 - **clsx & tailwind-merge**: Conditional CSS class management.
 - **class-variance-authority**: Type-safe component variant management.
+
+---
+
+# CHANGELOG
+
+## 2025-08-03 - Project Migration from Replit Agent to Replit Environment
+- **Migration Completed**: Successfully migrated Next.js SEO keyword tracking application to standard Replit environment
+- **Package Installation**: Installed all required Node.js dependencies including Next.js 15, React 19, Supabase client, Radix UI components, Tailwind CSS, and TypeScript
+- **Environment Setup**: Verified Supabase environment variables are properly configured (.env file with NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY)
+- **Server Status**: Next.js development server successfully running on port 5000
+- **Security Practices**: Maintained proper client/server separation, TypeScript type safety, and environment variable management
+- **Database Access**: Confirmed agent has NO direct database access - all SQL queries must be provided to user for manual execution
+- **Documentation Updates**: Added critical rules for agent behavior to prevent unauthorized changes and maintain documentation integrity

@@ -339,8 +339,20 @@ export default function DashboardPage() {
         {/* Site Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">T</span>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden">
+              <img 
+                src={`https://www.google.com/s2/favicons?domain=${currentSite.domain}&sz=32`}
+                alt={`${currentSite.domain} favicon`}
+                className="w-8 h-8"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.innerHTML = `<span class="text-white font-bold text-lg">${currentSite.domain.charAt(0).toUpperCase()}</span>`;
+                  }
+                }}
+              />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -473,17 +485,17 @@ export default function DashboardPage() {
         </div>
 
         {/* Keywords Table */}
-        <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-sm">
+        <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg">
           <div className="p-6">
             <div className="flex items-center gap-4 mb-6">
-              <Button variant="ghost" size="sm" className="bg-gray-100 text-gray-900">Top 100</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600">Top 50</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600">Top 20</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600">Top 10</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600">Top 5</Button>
-              <Button variant="ghost" size="sm" className="text-gray-600">Top 3</Button>
+              <Button variant="ghost" size="sm" className="bg-blue-50/80 backdrop-blur-sm text-blue-600">Top 100</Button>
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 50</Button>
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 20</Button>
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 10</Button>
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 5</Button>
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-white/50">Top 3</Button>
               <div className="flex-1"></div>
-              <Button variant="outline" size="sm" className="bg-white border-gray-200">
+              <Button variant="outline" size="sm" className="bg-white/50 backdrop-blur-sm border-white/20">
                 Export All
               </Button>
               <Button className="bg-blue-600 hover:bg-blue-700" size="sm">

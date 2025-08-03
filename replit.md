@@ -119,3 +119,5 @@ Preferred communication style: Simple, everyday language.
 - **Database Fix**: Created fix_auth_trigger.sql with corrected trigger function
 - **Status**: Ready for workspace creation testing
 - **MODAL FIX**: Replaced complex Radix Dialog with inline modal implementation to ensure workspace creation works
+- **FAVICON FIX**: Implemented real favicon fetching from Google's favicon service with fallback to first letter
+- **GLASS EFFECTS**: Added glass effects (backdrop-blur-sm, white/80 transparency) to all cards, tables, and buttons while maintaining white background

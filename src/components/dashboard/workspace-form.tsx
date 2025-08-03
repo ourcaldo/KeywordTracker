@@ -31,9 +31,11 @@ export function WorkspaceForm({ isOpen, onClose, onSubmit, loading = false }: Wo
     }
   }
 
+  console.log('WorkspaceForm render:', { isOpen, loading })
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-sm border border-gray-200/50">
+      <DialogContent className="sm:max-w-md bg-white border border-gray-200 shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-gray-900">
             Create New Workspace

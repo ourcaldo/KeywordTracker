@@ -91,6 +91,12 @@ export default function AuthenticationPage() {
 
     try {
       if (isSignUp) {
+        console.log('Starting signup process...')
+        console.log('Email:', email)
+        console.log('First Name:', firstName)
+        console.log('Last Name:', lastName)
+        console.log('Phone:', phoneNumber)
+        
         // Create user account with Supabase Auth
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -105,23 +111,37 @@ export default function AuthenticationPage() {
           }
         })
 
-        if (error) throw error
+        console.log('Signup response:', { data, error })
+
+        if (error) {
+          console.error('Signup error:', error)
+          throw error
+        }
 
         if (data.user) {
+          console.log('User created successfully:', data.user.id)
           // User profile will be automatically created by database trigger
           router.push('/dashboard')
         }
       } else {
+        console.log('Starting login process...')
         // Handle login flow
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
-        if (error) throw error
+        
+        console.log('Login response:', { data, error })
+        
+        if (error) {
+          console.error('Login error:', error)
+          throw error
+        }
         if (data.user) router.push('/dashboard')
       }
     } catch (error: any) {
-      setError(error.message)
+      console.error('Authentication error:', error)
+      setError(error.message || 'An error occurred during authentication')
     } finally {
       setLoading(false)
     }

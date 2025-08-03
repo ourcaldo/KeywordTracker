@@ -32,7 +32,8 @@ export default function AuthenticationPage() {
   // Form state management
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [fullName, setFullName] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   
   // UI state management
@@ -90,9 +91,6 @@ export default function AuthenticationPage() {
 
     try {
       if (isSignUp) {
-        // Extract first name for display_name (used in Supabase Auth UI)
-        const firstName = fullName.split(' ')[0] || fullName
-        
         // Create user account with Supabase Auth
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -100,7 +98,8 @@ export default function AuthenticationPage() {
           options: {
             data: {
               display_name: firstName,
-              full_name: fullName,
+              first_name: firstName,
+              last_name: lastName,
               phone: phoneNumber
             }
           }
@@ -112,7 +111,8 @@ export default function AuthenticationPage() {
           // Create extended user profile in our custom table
           await supabase.from('user_profiles').insert({
             user_id: data.user.id,
-            full_name: fullName,
+            first_name: firstName,
+            last_name: lastName,
             phone_number: phoneNumber,
             email: email
           })
@@ -243,36 +243,70 @@ export default function AuthenticationPage() {
           {/* Form */}
           <form onSubmit={handleSubmit}>
             {isSignUp && (
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: '#374151',
-                  marginBottom: '6px'
-                }}>
-                  Name*
-                </label>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Full Name"
-                  style={{
-                    width: '100%',
-                    padding: isMobile ? '10px 14px' : '12px 16px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '12px',
-                    fontSize: isMobile ? '14px' : '16px',
-                    outline: 'none',
-                    transition: 'border-color 0.2s'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#667eea'}
-                  onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-                  required
-                  disabled={loading}
-                />
-              </div>
+              <>
+                <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: '#374151',
+                      marginBottom: '6px'
+                    }}>
+                      First Name*
+                    </label>
+                    <input
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="First Name"
+                      style={{
+                        width: '100%',
+                        padding: isMobile ? '10px 14px' : '12px 16px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '12px',
+                        fontSize: isMobile ? '14px' : '16px',
+                        outline: 'none',
+                        transition: 'border-color 0.2s'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      required
+                      disabled={loading}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: '#374151',
+                      marginBottom: '6px'
+                    }}>
+                      Last Name*
+                    </label>
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      placeholder="Last Name"
+                      style={{
+                        width: '100%',
+                        padding: isMobile ? '10px 14px' : '12px 16px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '12px',
+                        fontSize: isMobile ? '14px' : '16px',
+                        outline: 'none',
+                        transition: 'border-color 0.2s'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      required
+                      disabled={loading}
+                    />
+                  </div>
+                </div>
+              </>
             )}
 
             <div style={{ marginBottom: '1rem' }}>

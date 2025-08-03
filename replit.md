@@ -1,3 +1,14 @@
+# REQUIRED DATABASE UPDATES
+
+Run these SQL queries in your Supabase SQL editor:
+
+```sql
+-- Update user_profiles table to use first_name and last_name instead of full_name
+ALTER TABLE user_profiles DROP COLUMN IF EXISTS full_name;
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS first_name TEXT;
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS last_name TEXT;
+```
+
 # Overview
 
 This project is a keyword tracking SEO application built with Next.js and TypeScript. Its primary purpose is to help users monitor and analyze their SEO rankings by tracking keyword performance over time. Key capabilities include a modern web interface, robust authentication, and a dashboard for managing keyword tracking activities. The application aims to provide a comprehensive solution for SEO professionals and businesses to gain insights into their search engine visibility.

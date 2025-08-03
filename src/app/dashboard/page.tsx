@@ -173,7 +173,10 @@ export default function DashboardPage() {
               <p className="text-sm text-gray-500 mb-6">A workspace helps you organize your SEO projects. You can add multiple domains to each workspace.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => setShowWorkspaceForm(true)}
+                onClick={() => {
+                  console.log('Opening workspace form')
+                  setShowWorkspaceForm(true)
+                }}
               >
                 Create Your First Workspace
               </Button>

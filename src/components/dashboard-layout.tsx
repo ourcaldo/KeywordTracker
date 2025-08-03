@@ -170,11 +170,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-medium text-sm">
-                    {userProfile?.full_name ? userProfile.full_name.charAt(0).toUpperCase() : 'U'}
+                    {userProfile?.first_name ? userProfile.first_name.charAt(0).toUpperCase() : 'U'}
                   </span>
                 </div>
                 <span className="text-sm font-medium text-gray-700">
-                  {userProfile?.full_name || userProfile?.email || 'User'}
+                  {userProfile?.first_name || userProfile?.email || 'User'}
                 </span>
               </div>
             </div>

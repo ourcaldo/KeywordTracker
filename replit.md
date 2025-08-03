@@ -95,11 +95,16 @@ Preferred communication style: Simple, everyday language.
 - **clsx & tailwind-merge**: Conditional CSS class management.
 - **class-variance-authority**: Type-safe component variant management.
 
-## 2025-08-03 - Authentication Configuration Issue Identified
-- **Root Cause Found**: "Database error saving new user" is from Supabase Auth service, not application code
-- **Issue Location**: Supabase Auth configuration - likely email confirmation enabled or RLS policies blocking
-- **Code Fixes**: Simplified signup to minimal auth.signUp() call, removed all custom data/options
-- **Testing Status**: Even minimal signup fails, confirming Supabase configuration issue
-- **Required Action**: Check Supabase Auth settings for email confirmation and RLS policies
-- **SQL to Check**: SELECT * FROM auth.config; -- Check auth configuration
-- **Next Step**: Disable email confirmation in Supabase dashboard Auth settings
+## 2025-08-03 - Critical Supabase Configuration Blocking Authentication
+- **Status**: BROKEN - All signup attempts fail with "Database error creating new user"
+- **Root Cause**: Supabase database configuration is blocking the auth service itself
+- **Issue Location**: Either RLS policies, database triggers, or email confirmation settings
+- **Testing Results**: Even minimal admin.createUser() with service role key fails
+- **Required SQL Commands**: 
+  ```sql
+  ALTER TABLE auth.users DISABLE ROW LEVEL SECURITY;
+  DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+  DROP FUNCTION IF EXISTS public.handle_new_user();
+  ```
+- **Required Dashboard Changes**: Disable email confirmation in Auth → Settings
+- **Next Step**: Database configuration must be fixed before authentication can work

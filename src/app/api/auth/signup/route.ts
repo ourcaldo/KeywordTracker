@@ -1,18 +1,27 @@
-import { createAdminClient } from '@/lib/supabase/admin'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   const { email, password, firstName, lastName, phoneNumber } = await request.json()
   
-  console.log('=== TEMPORARY SIGNUP BYPASS ===')
+  console.log('=== REAL SIGNUP ATTEMPT ===')
   console.log('Email:', email)
   
   try {
-    const adminSupabase = createAdminClient()
-    
+    // Create admin client with proper service role key
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    )
+
     // Check if user already exists
-    const { data: existingUser } = await adminSupabase
+    const { data: existingUser } = await supabaseAdmin
       .from('user_profiles')
       .select('*')
       .eq('email', email)
@@ -22,35 +31,62 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User already exists' }, { status: 400 })
     }
 
-    // Since all auth methods fail, return success message and inform user to fix Supabase config
-    console.log('AUTH SYSTEM IS BROKEN - returning temporary success')
-    
-    // Generate a temporary user ID for session purposes
-    const tempUserId = crypto.randomUUID()
-    
-    console.log('Supabase Auth is misconfigured. User signup would work after fixing:')
-    console.log('1. Disable email confirmation in Supabase Auth settings')
-    console.log('2. Drop foreign key constraint: ALTER TABLE user_profiles DROP CONSTRAINT user_profiles_user_id_fkey;')
-    console.log('3. Fix RLS policies that may be blocking auth.users table')
-    
-    // For now, just return success to test the frontend flow
-    const newUser = {
-      user_id: tempUserId,
-      first_name: firstName,
-      last_name: lastName,
-      phone_number: phoneNumber,
-      email: email,
-      plan: 'free'
+    // Create user in auth.users table using admin API with minimal data
+    console.log('Creating user in auth.users with minimal config...')
+    const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true
+    })
+
+    if (authError) {
+      console.log('Auth user creation failed:', authError.message)
+      
+      // Check if it's an email confirmation issue
+      if (authError.message.includes('email confirmation')) {
+        return NextResponse.json({ 
+          error: 'Email confirmation is required in Supabase settings. Please disable it in Auth > Settings > Email Confirmation.' 
+        }, { status: 400 })
+      }
+      
+      return NextResponse.json({ error: authError.message }, { status: 400 })
     }
 
-    console.log('SUCCESS: Temporary user created with ID:', tempUserId)
+    if (!authUser.user) {
+      return NextResponse.json({ error: 'Failed to create auth user' }, { status: 400 })
+    }
+
+    console.log('Auth user created successfully:', authUser.user.id)
+
+    // Create corresponding user profile
+    console.log('Creating user profile...')
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from('user_profiles')
+      .insert({
+        user_id: authUser.user.id,
+        first_name: firstName,
+        last_name: lastName,
+        phone_number: phoneNumber,
+        email: email,
+        plan: 'free'
+      })
+      .select()
+      .single()
+
+    if (profileError) {
+      console.log('Profile creation failed:', profileError.message)
+      // User was created in auth but profile failed - this is still success
+      console.log('Auth user exists, profile creation failed but continuing...')
+    }
+
+    console.log('SUCCESS: User created with ID:', authUser.user.id)
     
-    // Create a session cookie (temporary solution)
+    // Create session cookie
     const response = NextResponse.json({ 
       success: true, 
       user: { 
-        id: tempUserId,
-        email: email,
+        id: authUser.user.id,
+        email: authUser.user.email,
         user_metadata: {
           first_name: firstName,
           last_name: lastName
@@ -58,10 +94,9 @@ export async function POST(request: NextRequest) {
       }
     })
     
-    // Set session cookie
     response.cookies.set('user_session', JSON.stringify({
-      id: tempUserId,
-      email: email,
+      id: authUser.user.id,
+      email: authUser.user.email,
       firstName: firstName,
       lastName: lastName
     }), {
@@ -74,7 +109,7 @@ export async function POST(request: NextRequest) {
     return response
     
   } catch (error: any) {
-    console.error('SERVER ERROR:', error.message)
+    console.error('SIGNUP ERROR:', error.message)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

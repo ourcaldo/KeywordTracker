@@ -175,12 +175,15 @@ Add Your First Domain
               <p className="text-gray-500 mb-8">Organize your SEO projects, track keywords, and monitor your search engine rankings in one powerful dashboard.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => {
-                  console.log('Opening workspace form, current state:', showWorkspaceForm)
-                  setShowWorkspaceForm(prev => {
-                    console.log('State transition from', prev, 'to true')
-                    return true
-                  })
+                onClick={(e) => {
+                  e.preventDefault()
+                  console.log('BUTTON CLICKED - Current state:', showWorkspaceForm)
+                  setShowWorkspaceForm(true)
+                  console.log('BUTTON CLICKED - State set to true')
+                  // Force re-render
+                  setTimeout(() => {
+                    console.log('TIMEOUT CHECK - State is now:', showWorkspaceForm)
+                  }, 100)
                 }}
               >
 Create Your First Workspace
@@ -427,15 +430,20 @@ Create Your First Workspace
       </div>
 
       {/* Forms */}
-      <WorkspaceForm
-        isOpen={showWorkspaceForm}
-        onClose={() => {
-          console.log('Closing workspace form')
-          setShowWorkspaceForm(false)
-        }}
-        onSubmit={handleCreateWorkspace}
-        loading={formLoading}
-      />
+      <div>
+        <p style={{color: 'red', fontSize: '20px', fontWeight: 'bold'}}>
+          DEBUG: showWorkspaceForm = {showWorkspaceForm ? 'TRUE' : 'FALSE'}
+        </p>
+        <WorkspaceForm
+          isOpen={showWorkspaceForm}
+          onClose={() => {
+            console.log('Closing workspace form')
+            setShowWorkspaceForm(false)
+          }}
+          onSubmit={handleCreateWorkspace}
+          loading={formLoading}
+        />
+      </div>
       
       <SiteForm
         isOpen={showSiteForm}

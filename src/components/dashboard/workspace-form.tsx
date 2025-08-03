@@ -35,7 +35,7 @@ export function WorkspaceForm({ isOpen, onClose, onSubmit, loading = false }: Wo
   
   // Test: Always show a simple div first to verify rendering
   if (isOpen) {
-    console.log('Dialog should be visible')
+    console.log('Dialog should be visible - SHOWING MODAL NOW')
     return (
       <div 
         className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"

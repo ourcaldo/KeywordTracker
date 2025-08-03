@@ -67,8 +67,14 @@ The application uses Supabase's authentication system with email/password login,
 
 ## Code Organization & Architecture
 
-### Component Structure
-- **Authentication Components** (`src/components/auth/`): Centralized auth UI components
+### Authentication Pages Structure
+- **Main Auth Page** (`src/app/auth/login/page.tsx`): Primary authentication component
+  - Handles both login and signup flows in a single, well-documented component
+  - Fully responsive design with mobile-first approach
+  - URL parameter-based mode switching (?mode=signup)
+  - Comprehensive inline documentation explaining all functionality
+- **Signup Redirect** (`src/app/auth/signup/page.tsx`): Clean redirect to main auth with signup mode
+- **Authentication Components** (`src/components/auth/`): Centralized auth UI components (planned)
   - `AuthLayout`: Responsive layout with branding for auth pages
   - `LoginForm`: Complete login/signup form with validation and error handling
 - **UI Components** (`src/components/ui/`): Reusable Radix-based components with consistent styling
@@ -108,9 +114,11 @@ The application uses Supabase's authentication system with email/password login,
 - **Elegant Design**: Beautiful modern login/signup page inspired by top SaaS platforms (Sellora, Felix UI style)
 - **Enhanced Signup**: Added full name and phone number fields with proper Supabase integration
 - **User Profile Management**: Extended user_profiles table with full_name, phone_number, email columns
-- **Mobile Responsive**: Clean two-column layout that adapts perfectly to mobile devices
+- **Fully Responsive**: Complete mobile-first design that adapts perfectly to all device sizes
 - **Visual Polish**: Gradient backgrounds, modern shadows, smooth animations, proper form validation
 - **Display Name Logic**: First name extracted from full name for Supabase auth display_name
+- **URL Structure**: Separate routes for /auth/login and /auth/signup with proper navigation
+- **Comprehensive Documentation**: Fully documented code with detailed comments and architecture notes
 
 ### ✅ Authentication System
 - **Enhanced UI**: Professional login page with responsive design and branding
@@ -118,6 +126,9 @@ The application uses Supabase's authentication system with email/password login,
 - **Route Protection**: Middleware-based authentication checks
 - **Error Handling**: Comprehensive error states and user feedback
 - **Extended Signup**: Full name, phone number collection with database integration
+- **Responsive Design**: Mobile-first approach with perfect adaptation across all screen sizes
+- **URL Management**: Clean routing with /auth/login and /auth/signup endpoints
+- **Code Documentation**: Comprehensive inline documentation explaining all functionality
 
 ### ✅ Developer Experience
 - **Code Documentation**: Every file includes purpose, functionality, and usage documentation
@@ -142,4 +153,7 @@ The application uses Supabase's authentication system with email/password login,
 - ✅ Modern elegant login/signup UI inspired by top SaaS platforms
 - ✅ Enhanced signup with full name and phone number collection
 - ✅ Extended user_profiles database schema with proper RLS policies
-- ✅ Mobile-responsive design with gradient backgrounds and modern styling
+- ✅ Fully responsive design with mobile-first approach for all devices
+- ✅ Clean URL structure with separate /auth/login and /auth/signup routes
+- ✅ Comprehensive code documentation with detailed architecture comments
+- ✅ Fixed all controlled input warnings and React best practices

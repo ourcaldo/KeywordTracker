@@ -1,29 +1,62 @@
 /**
- * Modern Login/Signup Page - Fully Responsive
- * Elegant design inspired by modern SaaS platforms
+ * Modern Authentication Page - Fully Responsive
+ * 
+ * This is the main authentication component that handles both login and signup flows.
+ * Features:
+ * - Elegant design inspired by modern SaaS platforms (Sellora, Felix UI style)
+ * - Fully responsive across all device sizes (mobile, tablet, desktop)
+ * - Enhanced signup with full name and phone number collection
+ * - Proper Supabase integration with user profile creation
+ * - Two-column layout on desktop with beautiful hero section
+ * - Mobile-first responsive design
+ * 
+ * URL Structure:
+ * - /auth/login - Default login mode
+ * - /auth/login?mode=signup - Signup mode
+ * - /auth/signup - Redirects to login with signup mode
+ * 
+ * Database Integration:
+ * - Creates user in auth.users table via Supabase Auth
+ * - Creates corresponding record in user_profiles table
+ * - Stores full_name, phone_number, email for extended profile data
+ * - Uses first name from full name as display_name in auth
  */
 
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-export default function LoginPage() {
+export default function AuthenticationPage() {
+  // Form state management
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
+  
+  // UI state management
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [isSignUp, setIsSignUp] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  
+  // Router and authentication setup
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
+  
+  // Determine if we're in signup mode from URL parameter
+  const [isSignUp, setIsSignUp] = useState(false)
 
+  // Initialize component state based on URL and screen size
   useEffect(() => {
+    // Check URL parameter to determine signup mode
+    const mode = searchParams.get('mode')
+    setIsSignUp(mode === 'signup')
+    
+    // Set up responsive design detection
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024)
     }
@@ -31,8 +64,25 @@ export default function LoginPage() {
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  }, [searchParams])
 
+  /**
+   * Handle form submission for both login and signup
+   * 
+   * Sign Up Flow:
+   * 1. Creates user in Supabase Auth with email/password
+   * 2. Stores additional metadata (display_name, full_name, phone) in auth.users
+   * 3. Creates corresponding record in user_profiles table
+   * 4. Redirects to dashboard on success
+   * 
+   * Login Flow:
+   * 1. Authenticates user with email/password
+   * 2. Redirects to dashboard on success
+   * 
+   * Error Handling:
+   * - Displays user-friendly error messages
+   * - Handles network errors, validation errors, and auth errors
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -40,8 +90,10 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
-        const firstName = fullName.split(' ')[0]
+        // Extract first name for display_name (used in Supabase Auth UI)
+        const firstName = fullName.split(' ')[0] || fullName
         
+        // Create user account with Supabase Auth
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -57,7 +109,7 @@ export default function LoginPage() {
         if (error) throw error
 
         if (data.user) {
-          // Create user profile
+          // Create extended user profile in our custom table
           await supabase.from('user_profiles').insert({
             user_id: data.user.id,
             full_name: fullName,
@@ -68,6 +120,7 @@ export default function LoginPage() {
           router.push('/dashboard')
         }
       } else {
+        // Handle login flow
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -357,7 +410,7 @@ export default function LoginPage() {
                   <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', color: '#374151' }}>
                     <input
                       type="checkbox"
-                      checked={rememberMe}
+                      checked={rememberMe || false}
                       onChange={(e) => setRememberMe(e.target.checked)}
                       style={{ marginRight: '8px' }}
                     />
@@ -413,7 +466,13 @@ export default function LoginPage() {
             </span>
             <button
               type="button"
-              onClick={() => setIsSignUp(!isSignUp)}
+              onClick={() => {
+                const newMode = !isSignUp
+                setIsSignUp(newMode)
+                // Update URL to reflect current mode
+                const newUrl = newMode ? '/auth/login?mode=signup' : '/auth/login'
+                router.push(newUrl, { scroll: false })
+              }}
               disabled={loading}
               style={{
                 background: 'none',

@@ -140,14 +140,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Menu className="h-5 w-5" />
               </Button>
               <nav className="hidden md:flex items-center space-x-1">
-                <Button variant="ghost" size="sm" className="text-blue-600 bg-blue-50/80">
+                <Button variant="ghost" size="sm" className="text-blue-600 bg-blue-50/80 font-medium">
                   Dashboard
-                </Button>
-                <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-gray-50/80">
-                  SERP Checker
-                </Button>
-                <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-gray-50/80">
-                  Tools
                 </Button>
               </nav>
             </div>

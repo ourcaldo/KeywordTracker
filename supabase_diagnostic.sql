@@ -37,8 +37,20 @@ FROM information_schema.routines
 WHERE routine_schema NOT IN ('information_schema', 'pg_catalog')
 ORDER BY routine_schema, routine_name;
 
--- 4. AUTH CONFIGURATION
-SELECT * FROM auth.config;
+-- 4. AUTH CONFIGURATION (check if table exists)
+SELECT 
+    table_name 
+FROM information_schema.tables 
+WHERE table_schema = 'auth' 
+    AND table_name = 'config';
+
+-- 4b. AUTH SCHEMA TABLES
+SELECT 
+    table_name,
+    table_type
+FROM information_schema.tables 
+WHERE table_schema = 'auth'
+ORDER BY table_name;
 
 -- 5. TABLE CONSTRAINTS (including foreign keys)
 SELECT 
@@ -71,14 +83,26 @@ WHERE table_schema = 'public'
 AND table_name = 'user_profiles'
 ORDER BY ordinal_position;
 
--- 7. AUTH.USERS TABLE RLS STATUS
+-- 7. AUTH.USERS TABLE RLS STATUS AND STRUCTURE
 SELECT 
     schemaname,
     tablename,
-    rowsecurity
+    rowsecurity,
+    tableowner
 FROM pg_tables
 WHERE schemaname = 'auth'
 AND tablename = 'users';
+
+-- 7b. AUTH.USERS COLUMNS
+SELECT 
+    column_name,
+    data_type,
+    is_nullable,
+    column_default
+FROM information_schema.columns
+WHERE table_schema = 'auth' 
+AND table_name = 'users'
+ORDER BY ordinal_position;
 
 -- 8. ALL SCHEMAS AND TABLES
 SELECT 

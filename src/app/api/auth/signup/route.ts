@@ -1,24 +1,14 @@
-import { createClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   const { email, password, firstName, lastName, phoneNumber } = await request.json()
   
-  console.log('=== REAL SIGNUP ATTEMPT ===')
+  console.log('=== SIGNUP ATTEMPT ===')
   console.log('Email:', email)
   
   try {
-    // Create admin client with proper service role key
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
+    const supabaseAdmin = createAdminClient()
 
     // Check if user already exists
     const { data: existingUser } = await supabaseAdmin
@@ -31,24 +21,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User already exists' }, { status: 400 })
     }
 
-    // Create user in auth.users table using admin API with minimal data
-    console.log('Creating user in auth.users with minimal config...')
+    // Create user with proper metadata for the trigger function
+    console.log('Creating user with proper metadata...')
     const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      email_confirm: true
+      email_confirm: true,
+      user_metadata: {
+        first_name: firstName,
+        last_name: lastName,
+        phone_number: phoneNumber,
+        full_name: `${firstName} ${lastName}` // This will be used by the trigger
+      }
     })
 
     if (authError) {
       console.log('Auth user creation failed:', authError.message)
-      
-      // Check if it's an email confirmation issue
-      if (authError.message.includes('email confirmation')) {
-        return NextResponse.json({ 
-          error: 'Email confirmation is required in Supabase settings. Please disable it in Auth > Settings > Email Confirmation.' 
-        }, { status: 400 })
-      }
-      
       return NextResponse.json({ error: authError.message }, { status: 400 })
     }
 
@@ -58,55 +46,43 @@ export async function POST(request: NextRequest) {
 
     console.log('Auth user created successfully:', authUser.user.id)
 
-    // Create corresponding user profile
-    console.log('Creating user profile...')
+    // The trigger should have created the user_profiles record automatically
+    // But let's make sure it has all the data we need
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('user_profiles')
-      .insert({
-        user_id: authUser.user.id,
-        first_name: firstName,
-        last_name: lastName,
-        phone_number: phoneNumber,
-        email: email,
-        plan: 'free'
-      })
-      .select()
+      .select('*')
+      .eq('user_id', authUser.user.id)
       .single()
 
-    if (profileError) {
-      console.log('Profile creation failed:', profileError.message)
-      // User was created in auth but profile failed - this is still success
-      console.log('Auth user exists, profile creation failed but continuing...')
+    if (profileError || !profile) {
+      // Manually create profile if trigger failed
+      console.log('Creating user profile manually...')
+      const { data: newProfile, error: insertError } = await supabaseAdmin
+        .from('user_profiles')
+        .insert({
+          user_id: authUser.user.id,
+          first_name: firstName,
+          last_name: lastName,
+          phone_number: phoneNumber,
+          email: email,
+          plan: 'free'
+        })
+        .select()
+        .single()
+
+      if (insertError) {
+        console.log('Profile creation failed:', insertError.message)
+        return NextResponse.json({ error: 'Failed to create user profile' }, { status: 500 })
+      }
     }
 
-    console.log('SUCCESS: User created with ID:', authUser.user.id)
+    console.log('SUCCESS: User and profile created')
     
-    // Create session cookie
-    const response = NextResponse.json({ 
+    return NextResponse.json({ 
       success: true, 
-      user: { 
-        id: authUser.user.id,
-        email: authUser.user.email,
-        user_metadata: {
-          first_name: firstName,
-          last_name: lastName
-        }
-      }
+      message: 'Account created successfully! Please log in.',
+      redirect: '/auth/login'
     })
-    
-    response.cookies.set('user_session', JSON.stringify({
-      id: authUser.user.id,
-      email: authUser.user.email,
-      firstName: firstName,
-      lastName: lastName
-    }), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7 // 7 days
-    })
-    
-    return response
     
   } catch (error: any) {
     console.error('SIGNUP ERROR:', error.message)

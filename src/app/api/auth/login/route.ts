@@ -1,55 +1,36 @@
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   const { email, password } = await request.json()
   
-  console.log('=== TEMPORARY LOGIN BYPASS ===')
+  console.log('=== LOGIN ATTEMPT ===')
   console.log('Email:', email)
   
   try {
-    const adminSupabase = createAdminClient()
+    const supabase = await createClient()
     
-    // Check if user exists in user_profiles
-    const { data: user, error } = await adminSupabase
-      .from('user_profiles')
-      .select('*')
-      .eq('email', email)
-      .single()
+    // Use proper Supabase auth
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
     
-    if (error || !user) {
+    if (authError || !authData.user) {
+      console.log('Login failed:', authError?.message)
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 400 })
     }
     
-    console.log('SUCCESS: User found with ID:', user.user_id)
+    console.log('SUCCESS: User authenticated:', authData.user.id)
     
-    // Create a session cookie (temporary solution)
-    const response = NextResponse.json({ 
+    return NextResponse.json({ 
       success: true, 
       user: { 
-        id: user.user_id,
-        email: user.email,
-        user_metadata: {
-          first_name: user.first_name,
-          last_name: user.last_name
-        }
+        id: authData.user.id,
+        email: authData.user.email,
+        user_metadata: authData.user.user_metadata
       }
     })
-    
-    // Set session cookie
-    response.cookies.set('user_session', JSON.stringify({
-      id: user.user_id,
-      email: user.email,
-      firstName: user.first_name,
-      lastName: user.last_name
-    }), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7 // 7 days
-    })
-    
-    return response
     
   } catch (error: any) {
     console.error('LOGIN ERROR:', error.message)

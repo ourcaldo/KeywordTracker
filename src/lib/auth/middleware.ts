@@ -1,96 +1,28 @@
-/**
- * Authentication Middleware
- * 
- * Provides utilities for route protection and authentication checks.
- * Used across the application to ensure proper access control.
- */
+import { createClient } from '@/lib/supabase/server'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-import { createServerClient } from '@supabase/ssr'
-import { NextRequest, NextResponse } from 'next/server'
-
-/**
- * Creates a Supabase client for middleware operations
- */
-export function createMiddlewareClient(request: NextRequest) {
+export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
     },
   })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value
-        },
-        set(name: string, value: string, options: any) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-        },
-        remove(name: string, options: any) {
-          request.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-        },
-      },
-    }
-  )
+  const supabase = await createClient()
 
-  return { supabase, response }
-}
+  // This will refresh session if expired - required for Server Components
+  const { data: { user } } = await supabase.auth.getUser()
 
-/**
- * Checks if the user is authenticated
- */
-export async function isAuthenticated(request: NextRequest) {
-  const { supabase } = createMiddlewareClient(request)
-  
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
-    return !!user
-  } catch {
-    return false
+  // if user is signed in and the current path is /auth/login redirect the user to /dashboard
+  if (user && request.nextUrl.pathname.startsWith('/auth')) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
-}
 
-/**
- * Gets the current user from the request
- */
-export async function getCurrentUser(request: NextRequest) {
-  const { supabase } = createMiddlewareClient(request)
-  
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
-    return user
-  } catch {
-    return null
+  // if user is not signed in and the current path is not /auth/login redirect the user to /auth/login
+  if (!user && !request.nextUrl.pathname.startsWith('/auth') && request.nextUrl.pathname !== '/') {
+    return NextResponse.redirect(new URL('/auth/login', request.url))
   }
+
+  return response
 }

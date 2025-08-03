@@ -113,8 +113,8 @@ export default function AuthenticationPage() {
         }
 
         if (result.success) {
-          // Redirect to dashboard on success
-          router.push('/dashboard')
+          // Redirect to login page to sign in with the new account
+          router.push('/auth/login?message=Account created successfully! Please log in.')
         }
       } else {
         // Login using our API route
@@ -136,7 +136,8 @@ export default function AuthenticationPage() {
         }
 
         if (result.success) {
-          router.push('/dashboard')
+          // Refresh the page to trigger proper session detection
+          window.location.href = '/dashboard'
         }
       }
     } catch (error: any) {

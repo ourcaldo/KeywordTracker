@@ -91,19 +91,16 @@ export default function AuthenticationPage() {
 
     try {
       if (isSignUp) {
-        // Direct signup with simple auth only
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: 'admin@test.com', // Test with existing user first
-          password: 'admin123'
+        // Simple signup without any database operations
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password
         })
 
-        if (error) {
-          // If admin login fails, the auth system is working, try creating new user
-          setError('Creating new user accounts is temporarily disabled. Please contact support.')
-          return
-        }
+        if (error) throw error
 
         if (data.user) {
+          // User created successfully in auth, redirect to dashboard
           router.push('/dashboard')
         }
       } else {

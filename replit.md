@@ -94,3 +94,12 @@ Preferred communication style: Simple, everyday language.
 - **date-fns**: Date manipulation.
 - **clsx & tailwind-merge**: Conditional CSS class management.
 - **class-variance-authority**: Type-safe component variant management.
+
+## 2025-08-03 - Authentication Configuration Issue Identified
+- **Root Cause Found**: "Database error saving new user" is from Supabase Auth service, not application code
+- **Issue Location**: Supabase Auth configuration - likely email confirmation enabled or RLS policies blocking
+- **Code Fixes**: Simplified signup to minimal auth.signUp() call, removed all custom data/options
+- **Testing Status**: Even minimal signup fails, confirming Supabase configuration issue
+- **Required Action**: Check Supabase Auth settings for email confirmation and RLS policies
+- **SQL to Check**: SELECT * FROM auth.config; -- Check auth configuration
+- **Next Step**: Disable email confirmation in Supabase dashboard Auth settings

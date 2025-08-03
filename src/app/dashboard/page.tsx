@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardLayout } from '@/components/dashboard-layout'
+import { WorkspaceForm } from '@/components/dashboard/workspace-form'
+import { SiteForm } from '@/components/dashboard/site-form'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, RefreshCw, Search, Filter } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -19,6 +21,7 @@ export default function DashboardPage() {
   const [userProfile, setUserProfile] = useState<any>(null)
   const [showWorkspaceForm, setShowWorkspaceForm] = useState(false)
   const [showSiteForm, setShowSiteForm] = useState(false)
+  const [formLoading, setFormLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -84,30 +87,40 @@ export default function DashboardPage() {
     }
   }
 
-  const handleCreateWorkspace = async () => {
+  const handleCreateWorkspace = async (name: string, description?: string) => {
     if (!user) return
     
-    const workspaceName = prompt('Enter workspace name (e.g., "My SEO Project"):')
-    if (!workspaceName) return
-
-    const workspace = await DashboardService.createWorkspace(user.id, workspaceName)
-    if (workspace) {
-      setWorkspaces([workspace])
-      // Refresh the page to show the "add domain" state
-      window.location.reload()
+    setFormLoading(true)
+    try {
+      const workspace = await DashboardService.createWorkspace(user.id, name, description)
+      if (workspace) {
+        setWorkspaces([workspace])
+        setShowWorkspaceForm(false)
+        // Auto-open site form after workspace creation
+        setTimeout(() => setShowSiteForm(true), 300)
+      }
+    } catch (error) {
+      console.error('Error creating workspace:', error)
+    } finally {
+      setFormLoading(false)
     }
   }
 
-  const handleAddSite = async () => {
+  const handleAddSite = async (domain: string, name: string, location: string) => {
     if (!user || workspaces.length === 0) return
     
-    const domain = prompt('Enter domain name (e.g., tesla.com):')
-    if (!domain) return
-
-    const site = await DashboardService.createSite(workspaces[0].id, user.id, domain, domain)
-    if (site) {
-      setCurrentSite(site)
-      await loadDashboardData(user.id)
+    setFormLoading(true)
+    try {
+      const site = await DashboardService.createSite(workspaces[0].id, user.id, domain, name, location)
+      if (site) {
+        setCurrentSite(site)
+        setShowSiteForm(false)
+        await loadDashboardData(user.id)
+      }
+    } catch (error) {
+      console.error('Error creating site:', error)
+    } finally {
+      setFormLoading(false)
     }
   }
 
@@ -142,7 +155,7 @@ export default function DashboardPage() {
               <p className="text-sm text-gray-500 mb-6">Now add your first domain to start tracking keywords and rankings.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={handleAddSite}
+                onClick={() => setShowSiteForm(true)}
               >
                 Add Your First Domain
               </Button>
@@ -160,7 +173,7 @@ export default function DashboardPage() {
               <p className="text-sm text-gray-500 mb-6">A workspace helps you organize your SEO projects. You can add multiple domains to each workspace.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={handleCreateWorkspace}
+                onClick={() => setShowWorkspaceForm(true)}
               >
                 Create Your First Workspace
               </Button>
@@ -405,6 +418,22 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Forms */}
+      <WorkspaceForm
+        isOpen={showWorkspaceForm}
+        onClose={() => setShowWorkspaceForm(false)}
+        onSubmit={handleCreateWorkspace}
+        loading={formLoading}
+      />
+      
+      <SiteForm
+        isOpen={showSiteForm}
+        onClose={() => setShowSiteForm(false)}
+        onSubmit={handleAddSite}
+        loading={formLoading}
+        workspaceName={workspaces[0]?.name}
+      />
     </DashboardLayout>
   )
 }

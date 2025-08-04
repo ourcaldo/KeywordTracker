@@ -1,15 +1,14 @@
--- Migration: Add "tb" prefix to all tables and organize by collections
+-- Migration: Add "tb" prefix to existing tables only (workspace_stats doesn't exist)
 -- Date: 2025-08-04
 -- Purpose: Restructure database with consistent naming convention
 
--- Step 1: Rename existing tables with "tb" prefix
+-- Step 1: Rename existing tables with "tb" prefix (only tables that exist)
 
 -- User Collection
 ALTER TABLE user_profiles RENAME TO tb_user_profiles;
 
 -- Workspace Collection  
 ALTER TABLE workspaces RENAME TO tb_workspaces;
--- Note: workspace_stats table does not exist yet, skip this rename
 
 -- Sites Collection
 ALTER TABLE sites RENAME TO tb_sites;
@@ -18,8 +17,7 @@ ALTER TABLE sites RENAME TO tb_sites;
 ALTER TABLE keywords RENAME TO tb_keywords;
 ALTER TABLE keyword_rankings RENAME TO tb_keyword_rankings;
 
--- Step 2: Update foreign key constraints to reference new table names
--- Note: Foreign key constraints are automatically updated when tables are renamed
+-- Step 2: Update foreign key constraints automatically handled
 
 -- Step 3: Recreate the view with new table names
 DROP VIEW IF EXISTS keywords_with_latest_rankings;
@@ -43,12 +41,7 @@ LEFT JOIN (
   ORDER BY keyword_id, recorded_at DESC
 ) lr ON k.id = lr.keyword_id;
 
--- Step 4: Update any indexes that reference the old table names
--- (Indexes are automatically renamed with the tables)
-
--- Step 5: Update RLS policies if they exist
--- Note: RLS policies are automatically updated when tables are renamed
-
+-- Step 4: Add table comments
 COMMENT ON TABLE tb_user_profiles IS 'User Collection: User account profiles and settings';
 COMMENT ON TABLE tb_workspaces IS 'Workspace Collection: Project containers for organizing SEO campaigns';
 COMMENT ON TABLE tb_sites IS 'Sites Collection: Domain websites within workspaces';

@@ -102,7 +102,7 @@ Preferred communication style: Simple, everyday language.
 - **Table Renaming**: Implemented systematic "tb" prefix for all database tables
 - **Collection Organization**: Grouped tables into logical collections:
   - **User Collection**: tb_user_profiles
-  - **Workspace Collection**: tb_workspaces, tb_workspace_stats  
+  - **Workspace Collection**: tb_workspaces  
   - **Sites Collection**: tb_sites
   - **Keywords Collection**: tb_keywords, tb_keyword_rankings, tb_keywords_with_latest_rankings
 - **Code Updates**: Updated all TypeScript types, API routes, and service layer queries

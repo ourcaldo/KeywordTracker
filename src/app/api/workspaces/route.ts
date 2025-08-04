@@ -11,7 +11,7 @@ export async function GET() {
   }
 
   const { data: workspaces, error } = await supabase
-    .from('workspaces')
+    .from('tb_workspaces')
     .select('*')
     .order('created_at', { ascending: false })
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   const { name, description } = await request.json()
 
   const { data: workspace, error } = await supabase
-    .from('workspaces')
+    .from('tb_workspaces')
     .insert([
       {
         user_id: user.id,

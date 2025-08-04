@@ -13,11 +13,11 @@ export async function GET(request: NextRequest) {
   }
 
   let query = supabase
-    .from('keywords')
+    .from('tb_keywords')
     .select(`
       *,
-      site:sites(*),
-      positions:keyword_positions(*)
+      site:tb_sites(*),
+      rankings:tb_keyword_rankings(*)
     `)
     .order('created_at', { ascending: false })
 
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   const { site_id, keyword, location = 'United States', device = 'desktop' } = await request.json()
 
   const { data: keywordData, error } = await supabase
-    .from('keywords')
+    .from('tb_keywords')
     .insert([
       {
         site_id,

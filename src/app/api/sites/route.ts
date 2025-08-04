@@ -11,10 +11,10 @@ export async function GET() {
   }
 
   const { data: sites, error } = await supabase
-    .from('sites')
+    .from('tb_sites')
     .select(`
       *,
-      workspace:workspaces(*)
+      workspace:tb_workspaces(*)
     `)
     .order('created_at', { ascending: false })
 
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
   const { workspace_id, name, url } = await request.json()
 
   const { data: site, error } = await supabase
-    .from('sites')
+    .from('tb_sites')
     .insert([
       {
         workspace_id,

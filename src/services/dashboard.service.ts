@@ -5,7 +5,7 @@ export class DashboardService {
   static async getUserProfile(userId: string): Promise<UserProfile | null> {
     const supabase = createClient()
     const { data, error } = await supabase
-      .from('user_profiles')
+      .from('tb_user_profiles')
       .select('*')
       .eq('user_id', userId)
       .single()
@@ -21,7 +21,7 @@ export class DashboardService {
   static async getUserWorkspaces(userId: string): Promise<Workspace[]> {
     const supabase = createClient()
     const { data, error } = await supabase
-      .from('workspaces')
+      .from('tb_workspaces')
       .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
@@ -37,7 +37,7 @@ export class DashboardService {
   static async getWorkspaceSites(workspaceId: string, userId: string): Promise<Site[]> {
     const supabase = createClient()
     const { data, error } = await supabase
-      .from('sites')
+      .from('tb_sites')
       .select('*')
       .eq('workspace_id', workspaceId)
       .eq('user_id', userId)
@@ -54,7 +54,7 @@ export class DashboardService {
   static async getSiteKeywords(siteId: string, userId: string): Promise<KeywordWithRanking[]> {
     const supabase = createClient()
     const { data, error } = await supabase
-      .from('keywords_with_latest_rankings')
+      .from('tb_keywords_with_latest_rankings')
       .select('*')
       .eq('site_id', siteId)
       .eq('user_id', userId)
@@ -126,7 +126,7 @@ export class DashboardService {
   static async createWorkspace(userId: string, name: string, description?: string): Promise<Workspace | null> {
     const supabase = createClient()
     const { data, error } = await supabase
-      .from('workspaces')
+      .from('tb_workspaces')
       .insert({
         user_id: userId,
         name,
@@ -146,7 +146,7 @@ export class DashboardService {
   static async createSite(workspaceId: string, userId: string, domain: string, name: string): Promise<Site | null> {
     const supabase = createClient()
     const { data, error } = await supabase
-      .from('sites')
+      .from('tb_sites')
       .insert({
         workspace_id: workspaceId,
         user_id: userId,

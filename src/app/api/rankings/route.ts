@@ -13,15 +13,15 @@ export async function GET(request: NextRequest) {
   }
 
   let query = supabase
-    .from('keyword_positions')
+    .from('tb_keyword_rankings')
     .select(`
       *,
-      keyword:keywords(
+      keyword:tb_keywords(
         *,
-        site:sites(*)
+        site:tb_sites(*)
       )
     `)
-    .order('tracked_date', { ascending: false })
+    .order('recorded_at', { ascending: false })
 
   // Filter by position range if specified
   if (positionRange) {
@@ -47,19 +47,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { keyword_id, position, search_engine = 'google', tracked_date } = await request.json()
+  const { keyword_id, position, device = 'desktop', location = 'US', recorded_at } = await request.json()
 
   const { data: ranking, error } = await supabase
-    .from('keyword_positions')
+    .from('tb_keyword_rankings')
     .upsert([
       {
         keyword_id,
         position,
-        search_engine,
-        tracked_date: tracked_date || new Date().toISOString().split('T')[0],
+        device,
+        location,
+        recorded_at: recorded_at || new Date().toISOString(),
       },
     ], {
-      onConflict: 'keyword_id,search_engine,tracked_date'
+      onConflict: 'keyword_id,device,location,recorded_at'
     })
     .select()
     .single()

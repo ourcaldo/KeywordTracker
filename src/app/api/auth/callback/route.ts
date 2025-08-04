@@ -16,14 +16,14 @@ export async function GET(request: NextRequest) {
       
       // Check if profile already exists
       const { data: existingProfile } = await supabase
-        .from('user_profiles')
+        .from('tb_user_profiles')
         .select('id')
         .eq('user_id', data.user.id)
         .single()
       
       if (!existingProfile) {
         // Create profile manually since trigger is broken
-        await supabase.from('user_profiles').insert({
+        await supabase.from('tb_user_profiles').insert({
           user_id: data.user.id,
           first_name: userData?.first_name || '',
           last_name: userData?.last_name || '',

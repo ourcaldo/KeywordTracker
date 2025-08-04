@@ -95,3 +95,18 @@ Preferred communication style: Simple, everyday language.
 - **date-fns**: Date manipulation.
 - **clsx & tailwind-merge**: Conditional CSS class management.
 - **class-variance-authority**: Type-safe component variant management.
+
+# Changelog
+
+## 2025-08-04 - Database Table Restructuring with "tb" Prefix and Collections
+- **Table Renaming**: Implemented systematic "tb" prefix for all database tables
+- **Collection Organization**: Grouped tables into logical collections:
+  - **User Collection**: tb_user_profiles
+  - **Workspace Collection**: tb_workspaces, tb_workspace_stats  
+  - **Sites Collection**: tb_sites
+  - **Keywords Collection**: tb_keywords, tb_keyword_rankings, tb_keywords_with_latest_rankings
+- **Code Updates**: Updated all TypeScript types, API routes, and service layer queries
+- **Migration Script**: Created comprehensive SQL migration script in migrations/01_rename_tables_with_prefix.sql
+- **View Recreation**: Updated tb_keywords_with_latest_rankings view with new table names
+- **API Alignment**: Modified all API endpoints to use new table names and relationships
+- **Status**: Database schema restructured with consistent naming convention ready for deployment

@@ -1,3 +1,8 @@
+# ⚠️ CRITICAL WARNING - NEVER DELETE ANYTHING FROM THIS FILE ⚠️
+# ALL CHANGELOGS MUST BE PRESERVED IN TIMELINE FORMAT
+# THIS FILE IS THE MAIN SOURCE OF PROJECT INFORMATION
+# ONLY ADD NEW INFORMATION - NEVER REMOVE OR MODIFY EXISTING CONTENT
+
 # Overview
 
 This project is a keyword tracking SEO application built with Next.js and TypeScript. Its primary purpose is to help users monitor and analyze their SEO rankings by tracking keyword performance over time. Key capabilities include a modern web interface, robust authentication, and a dashboard for managing keyword tracking activities. The application aims to provide a comprehensive solution for SEO professionals and businesses to gain insights into their search engine visibility.
@@ -57,6 +62,70 @@ Preferred communication style: Simple, everyday language.
 - Google Analytics-style workspace and domain selector in the dashboard.
 
 ## Database Schema (Supabase)
+
+| table_name                       | column_name        | data_type                | is_nullable | column_default         |
+| -------------------------------- | ------------------ | ------------------------ | ----------- | ---------------------- |
+| tb_keyword_rankings              | id                 | uuid                     | NO          | gen_random_uuid()      |
+| tb_keyword_rankings              | keyword_id         | uuid                     | NO          | null                   |
+| tb_keyword_rankings              | site_id            | uuid                     | NO          | null                   |
+| tb_keyword_rankings              | workspace_id       | uuid                     | NO          | null                   |
+| tb_keyword_rankings              | user_id            | uuid                     | NO          | null                   |
+| tb_keyword_rankings              | position           | integer                  | YES         | null                   |
+| tb_keyword_rankings              | device             | USER-DEFINED             | NO          | 'desktop'::device_type |
+| tb_keyword_rankings              | location           | text                     | NO          | 'US'::text             |
+| tb_keyword_rankings              | recorded_at        | timestamp with time zone | NO          | null                   |
+| tb_keyword_rankings              | created_at         | timestamp with time zone | NO          | now()                  |
+| tb_keywords                      | id                 | uuid                     | NO          | gen_random_uuid()      |
+| tb_keywords                      | site_id            | uuid                     | NO          | null                   |
+| tb_keywords                      | workspace_id       | uuid                     | NO          | null                   |
+| tb_keywords                      | user_id            | uuid                     | NO          | null                   |
+| tb_keywords                      | keyword            | text                     | NO          | null                   |
+| tb_keywords                      | target_url         | text                     | YES         | null                   |
+| tb_keywords                      | volume             | integer                  | YES         | null                   |
+| tb_keywords                      | created_at         | timestamp with time zone | NO          | now()                  |
+| tb_keywords                      | updated_at         | timestamp with time zone | NO          | now()                  |
+| tb_keywords_with_latest_rankings | id                 | uuid                     | YES         | null                   |
+| tb_keywords_with_latest_rankings | site_id            | uuid                     | YES         | null                   |
+| tb_keywords_with_latest_rankings | workspace_id       | uuid                     | YES         | null                   |
+| tb_keywords_with_latest_rankings | user_id            | uuid                     | YES         | null                   |
+| tb_keywords_with_latest_rankings | keyword            | text                     | YES         | null                   |
+| tb_keywords_with_latest_rankings | target_url         | text                     | YES         | null                   |
+| tb_keywords_with_latest_rankings | volume             | integer                  | YES         | null                   |
+| tb_keywords_with_latest_rankings | created_at         | timestamp with time zone | YES         | null                   |
+| tb_keywords_with_latest_rankings | updated_at         | timestamp with time zone | YES         | null                   |
+| tb_keywords_with_latest_rankings | latest_position    | integer                  | YES         | null                   |
+| tb_keywords_with_latest_rankings | latest_device      | USER-DEFINED             | YES         | null                   |
+| tb_keywords_with_latest_rankings | latest_location    | text                     | YES         | null                   |
+| tb_keywords_with_latest_rankings | latest_recorded_at | timestamp with time zone | YES         | null                   |
+| tb_sites                         | id                 | uuid                     | NO          | gen_random_uuid()      |
+| tb_sites                         | workspace_id       | uuid                     | NO          | null                   |
+| tb_sites                         | user_id            | uuid                     | NO          | null                   |
+| tb_sites                         | domain             | text                     | NO          | null                   |
+| tb_sites                         | name               | text                     | NO          | null                   |
+| tb_sites                         | created_at         | timestamp with time zone | NO          | now()                  |
+| tb_sites                         | updated_at         | timestamp with time zone | NO          | now()                  |
+| tb_user_profiles                 | id                 | uuid                     | NO          | gen_random_uuid()      |
+| tb_user_profiles                 | user_id            | uuid                     | NO          | null                   |
+| tb_user_profiles                 | avatar_url         | text                     | YES         | null                   |
+| tb_user_profiles                 | plan               | USER-DEFINED             | NO          | 'free'::user_plan      |
+| tb_user_profiles                 | created_at         | timestamp with time zone | NO          | now()                  |
+| tb_user_profiles                 | updated_at         | timestamp with time zone | NO          | now()                  |
+| tb_user_profiles                 | phone_number       | text                     | YES         | null                   |
+| tb_user_profiles                 | email              | text                     | YES         | null                   |
+| tb_user_profiles                 | first_name         | text                     | YES         | null                   |
+| tb_user_profiles                 | last_name          | text                     | YES         | null                   |
+| tb_workspace_stats               | id                 | uuid                     | YES         | null                   |
+| tb_workspace_stats               | name               | text                     | YES         | null                   |
+| tb_workspace_stats               | user_id            | uuid                     | YES         | null                   |
+| tb_workspace_stats               | sites_count        | bigint                   | YES         | null                   |
+| tb_workspace_stats               | keywords_count     | bigint                   | YES         | null                   |
+| tb_workspace_stats               | rankings_count     | bigint                   | YES         | null                   |
+| tb_workspaces                    | id                 | uuid                     | NO          | gen_random_uuid()      |
+| tb_workspaces                    | user_id            | uuid                     | NO          | null                   |
+| tb_workspaces                    | name               | text                     | NO          | null                   |
+| tb_workspaces                    | description        | text                     | YES         | null                   |
+| tb_workspaces                    | created_at         | timestamp with time zone | NO          | now()                  |
+| tb_workspaces                    | updated_at         | timestamp with time zone | NO          | now()                  |
 ### Core Tables
 - `user_profiles` - User information with first_name, last_name, email, phone_number, plan
 - `workspaces` - User workspaces for organizing SEO projects
@@ -110,3 +179,6 @@ Preferred communication style: Simple, everyday language.
 - **View Recreation**: Updated tb_keywords_with_latest_rankings view with new table names
 - **API Alignment**: Modified all API endpoints to use new table names and relationships
 - **Status**: Database schema restructured with consistent naming convention ready for deployment
+- **SQL Migration**: Created corrected migration script in migrations/01_rename_tables_with_prefix_corrected.sql
+- **API Alignment**: Modified all API endpoints to use new table names and relationships  
+- **Code Updates**: Updated all TypeScript types, API routes, and service layer queries to use tb_ prefix

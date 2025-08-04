@@ -44,8 +44,8 @@ Preferred communication style: Simple, everyday language.
 - **Component Structure**: Separation of UI, page, and utility components.
 - **Type Safety**: Full TypeScript implementation with strict mode.
 - **Styling Architecture**: Component-scoped Tailwind CSS.
-- **Authentication Pages**: Centralized authentication logic under `src/app/auth/login/page.tsx` handling both login and signup, with responsive design and URL parameter-based mode switching. Redirects from `src/app/auth/signup/page.tsx`.
-- **Service Layer**: Business logic organized into domain-specific services (`workspace.service.ts`, `site.service.ts`, `keyword.service.ts`) and authentication utilities (`middleware.ts`, `session.ts`).
+- **Authentication Pages**: Centralized authentication logic handling both login and signup, with responsive design and URL parameter-based mode switching.
+- **Service Layer**: Business logic organized into domain-specific services and authentication utilities.
 - **Security**: Environment variables for secrets, clear client/server separation, TypeScript for type safety, and authentication middleware for route protection.
 
 ## UI/UX Decisions
@@ -54,6 +54,7 @@ Preferred communication style: Simple, everyday language.
 - Tesla.com-style dashboard layout with site domain header on top
 - Beautiful modal forms instead of ugly prompt() dialogs
 - Proper workflow: Create workspace → Add domains within workspace
+- Google Analytics-style workspace and domain selector in the dashboard.
 
 ## Database Schema (Supabase)
 ### Core Tables
@@ -73,70 +74,6 @@ Preferred communication style: Simple, everyday language.
 1. User must create workspace first
 2. Then add domain sites within workspace
 3. Then add keywords to track for each site
-
-| table_name                    | column_name        | data_type                | is_nullable | column_default         |
-| ----------------------------- | ------------------ | ------------------------ | ----------- | ---------------------- |
-| keyword_rankings              | id                 | uuid                     | NO          | gen_random_uuid()      |
-| keyword_rankings              | keyword_id         | uuid                     | NO          | null                   |
-| keyword_rankings              | site_id            | uuid                     | NO          | null                   |
-| keyword_rankings              | workspace_id       | uuid                     | NO          | null                   |
-| keyword_rankings              | user_id            | uuid                     | NO          | null                   |
-| keyword_rankings              | position           | integer                  | YES         | null                   |
-| keyword_rankings              | device             | USER-DEFINED             | NO          | 'desktop'::device_type |
-| keyword_rankings              | location           | text                     | NO          | 'US'::text             |
-| keyword_rankings              | recorded_at        | timestamp with time zone | NO          | null                   |
-| keyword_rankings              | created_at         | timestamp with time zone | NO          | now()                  |
-| keywords                      | id                 | uuid                     | NO          | gen_random_uuid()      |
-| keywords                      | site_id            | uuid                     | NO          | null                   |
-| keywords                      | workspace_id       | uuid                     | NO          | null                   |
-| keywords                      | user_id            | uuid                     | NO          | null                   |
-| keywords                      | keyword            | text                     | NO          | null                   |
-| keywords                      | target_url         | text                     | YES         | null                   |
-| keywords                      | volume             | integer                  | YES         | null                   |
-| keywords                      | created_at         | timestamp with time zone | NO          | now()                  |
-| keywords                      | updated_at         | timestamp with time zone | NO          | now()                  |
-| keywords_with_latest_rankings | id                 | uuid                     | YES         | null                   |
-| keywords_with_latest_rankings | site_id            | uuid                     | YES         | null                   |
-| keywords_with_latest_rankings | workspace_id       | uuid                     | YES         | null                   |
-| keywords_with_latest_rankings | user_id            | uuid                     | YES         | null                   |
-| keywords_with_latest_rankings | keyword            | text                     | YES         | null                   |
-| keywords_with_latest_rankings | target_url         | text                     | YES         | null                   |
-| keywords_with_latest_rankings | volume             | integer                  | YES         | null                   |
-| keywords_with_latest_rankings | created_at         | timestamp with time zone | YES         | null                   |
-| keywords_with_latest_rankings | updated_at         | timestamp with time zone | YES         | null                   |
-| keywords_with_latest_rankings | latest_position    | integer                  | YES         | null                   |
-| keywords_with_latest_rankings | latest_device      | USER-DEFINED             | YES         | null                   |
-| keywords_with_latest_rankings | latest_location    | text                     | YES         | null                   |
-| keywords_with_latest_rankings | latest_recorded_at | timestamp with time zone | YES         | null                   |
-| sites                         | id                 | uuid                     | NO          | gen_random_uuid()      |
-| sites                         | workspace_id       | uuid                     | NO          | null                   |
-| sites                         | user_id            | uuid                     | NO          | null                   |
-| sites                         | domain             | text                     | NO          | null                   |
-| sites                         | name               | text                     | NO          | null                   |
-| sites                         | created_at         | timestamp with time zone | NO          | now()                  |
-| sites                         | updated_at         | timestamp with time zone | NO          | now()                  |
-| user_profiles                 | id                 | uuid                     | NO          | gen_random_uuid()      |
-| user_profiles                 | user_id            | uuid                     | NO          | null                   |
-| user_profiles                 | avatar_url         | text                     | YES         | null                   |
-| user_profiles                 | plan               | USER-DEFINED             | NO          | 'free'::user_plan      |
-| user_profiles                 | created_at         | timestamp with time zone | NO          | now()                  |
-| user_profiles                 | updated_at         | timestamp with time zone | NO          | now()                  |
-| user_profiles                 | phone_number       | text                     | YES         | null                   |
-| user_profiles                 | email              | text                     | YES         | null                   |
-| user_profiles                 | first_name         | text                     | YES         | null                   |
-| user_profiles                 | last_name          | text                     | YES         | null                   |
-| workspace_stats               | id                 | uuid                     | YES         | null                   |
-| workspace_stats               | name               | text                     | YES         | null                   |
-| workspace_stats               | user_id            | uuid                     | YES         | null                   |
-| workspace_stats               | sites_count        | bigint                   | YES         | null                   |
-| workspace_stats               | keywords_count     | bigint                   | YES         | null                   |
-| workspace_stats               | rankings_count     | bigint                   | YES         | null                   |
-| workspaces                    | id                 | uuid                     | NO          | gen_random_uuid()      |
-| workspaces                    | user_id            | uuid                     | NO          | null                   |
-| workspaces                    | name               | text                     | NO          | null                   |
-| workspaces                    | description        | text                     | YES         | null                   |
-| workspaces                    | created_at         | timestamp with time zone | NO          | now()                  |
-| workspaces                    | updated_at         | timestamp with time zone | NO          | now()                  |
 
 # External Dependencies
 
@@ -158,40 +95,3 @@ Preferred communication style: Simple, everyday language.
 - **date-fns**: Date manipulation.
 - **clsx & tailwind-merge**: Conditional CSS class management.
 - **class-variance-authority**: Type-safe component variant management.
-
-## 2025-08-03 - Critical Supabase Configuration Blocking Authentication
-- **Status**: BROKEN - All signup attempts fail with "Database error creating new user"
-- **Root Cause**: Supabase database configuration is blocking the auth service itself
-- **Issue Location**: Either RLS policies, database triggers, or email confirmation settings
-- **Testing Results**: Even minimal admin.createUser() with service role key fails
-- **Required SQL Commands**: 
-  ```sql
-  ALTER TABLE auth.users DISABLE ROW LEVEL SECURITY;
-  DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-  DROP FUNCTION IF EXISTS public.handle_new_user();
-  ```
-- **Required Dashboard Changes**: Disable email confirmation in Auth → Settings
-- **FIXED**: Authentication system migrated to proper Supabase Auth with corrected database trigger
-- **Status**: MIGRATED - Project successfully migrated from Replit Agent to standard Replit environment
-- **UI FIXES COMPLETED**: Removed SERP Checker/Tools menu items, improved copywriting with standout messaging
-- **Next Step**: Run SQL commands in fix_auth_trigger.sql to complete database setup
-
-## 2025-08-03 - Migration Completed with UI Improvements
-- **Authentication**: Migrated from custom cookie system to proper Supabase Auth
-- **Navigation**: Removed SERP Checker and Tools menu items from dashboard header
-- **Copywriting**: Enhanced onboarding messages with emojis and standout formatting
-- **Database Fix**: Created fix_auth_trigger.sql with corrected trigger function
-- **Status**: Ready for workspace creation testing
-- **MODAL FIX**: Replaced complex Radix Dialog with inline modal implementation to ensure workspace creation works
-- **FAVICON FIX**: Implemented real favicon fetching from Google's favicon service with fallback to first letter
-- **GLASS EFFECTS**: Added glass effects (backdrop-blur-sm, white/80 transparency) to all cards, tables, and buttons while maintaining white background
-
-## 2025-08-04 - Google Analytics-Style Workspace/Domain Selector Implementation
-- **Dashboard Menu Removal**: Removed "Dashboard" menu button from header as requested
-- **Workspace Selector**: Created Google Analytics-style workspace and domain selector component
-- **Modal System**: Implemented beautiful modal forms for creating workspaces and sites (replaced inline forms)
-- **User Experience**: Added proper workspace → domain workflow matching Google Analytics interface
-- **Search Functionality**: Integrated search capability within workspace and domain dropdowns
-- **Visual Design**: Enhanced with glass effects, proper icons, and intuitive selection interface
-- **State Management**: Improved dashboard state management for workspace/site selection
-- **Status**: Project successfully migrated to Replit environment with enhanced UI

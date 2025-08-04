@@ -135,7 +135,7 @@ export function DashboardLayout({ children, workspaceSelector }: DashboardLayout
       {/* Main content */}
       <div className="lg:ml-16">
         {/* Top bar */}
-        <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 px-4 py-4 lg:px-6">
+        <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 px-4 py-4 lg:px-6 relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button

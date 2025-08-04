@@ -127,7 +127,7 @@ export function HierarchicalSelector({
   }
 
   return (
-    <div className="relative">
+    <div className="relative z-50">
       <Button
         variant="ghost"
         size="sm"
@@ -139,7 +139,14 @@ export function HierarchicalSelector({
       </Button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-xl z-50 max-h-96 overflow-hidden">
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 z-[9998]" 
+            onClick={() => setIsOpen(false)}
+          />
+          {/* Dropdown */}
+          <div className="absolute top-full left-0 mt-2 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-xl z-[9999] max-h-96 overflow-hidden">
           <div className="flex">
             {/* Left Column - Workspaces */}
             <div className="w-64 p-4 border-r border-gray-200/50">
@@ -220,6 +227,7 @@ export function HierarchicalSelector({
             )}
           </div>
         </div>
+        </>
       )}
     </div>
   )

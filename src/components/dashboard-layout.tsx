@@ -145,25 +145,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               >
                 <Menu className="h-5 w-5" />
               </Button>
-              <nav className="hidden md:flex items-center space-x-1">
-                <Button variant="ghost" size="sm" className="text-blue-600 bg-blue-50/80 font-medium">
-                  Dashboard
-                </Button>
-              </nav>
+              {/* Removed Dashboard menu as requested */}
             </div>
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="default" 
-                size="sm" 
-                className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => {
-                  // This will be handled by the dashboard page
-                  window.location.reload()
-                }}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Domain
-              </Button>
+            <div className="flex items-center gap-3">{/* Add Domain button removed - now handled by workspace selector */}
               <Button variant="ghost" size="icon" className="hover:bg-gray-50/80">
                 <Settings className="h-5 w-5" />
               </Button>

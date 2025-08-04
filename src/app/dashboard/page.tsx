@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardLayout } from '@/components/dashboard-layout'
-// import { WorkspaceForm } from '@/components/dashboard/workspace-form' // Not needed anymore
-// import { SiteForm } from '@/components/dashboard/site-form' // Not needed anymore
+import { WorkspaceSelector } from '@/components/dashboard/workspace-selector'
+import { WorkspaceModal } from '@/components/dashboard/workspace-modal'
+import { SiteModal } from '@/components/dashboard/site-modal'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, RefreshCw, Search, Filter } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { DashboardService } from '@/services/dashboard.service'
+import { Workspace, Site } from '@/lib/database'
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null)
@@ -17,10 +19,12 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<string>('')
-  const [workspaces, setWorkspaces] = useState<any[]>([])
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([])
+  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | undefined>()
+  const [selectedSite, setSelectedSite] = useState<Site | undefined>()
   const [userProfile, setUserProfile] = useState<any>(null)
-  const [showWorkspaceForm, setShowWorkspaceForm] = useState(false)
-  const [showSiteForm, setShowSiteForm] = useState(false)
+  const [showWorkspaceModal, setShowWorkspaceModal] = useState(false)
+  const [showSiteModal, setShowSiteModal] = useState(false)
   const [formLoading, setFormLoading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
@@ -61,8 +65,12 @@ export default function DashboardPage() {
         return
       }
 
+      // Set first workspace as selected
+      const firstWorkspace = userWorkspaces[0]
+      setSelectedWorkspace(firstWorkspace)
+
       // Get sites from the first workspace
-      const sites = await DashboardService.getWorkspaceSites(userWorkspaces[0].id, userId)
+      const sites = await DashboardService.getWorkspaceSites(firstWorkspace.id, userId)
       if (sites.length === 0) {
         setLoading(false)
         return
@@ -70,6 +78,7 @@ export default function DashboardPage() {
 
       const site = sites[0]
       setCurrentSite(site)
+      setSelectedSite(site)
 
       // Get keywords and stats for this site
       const [siteKeywords, siteStats] = await Promise.all([
@@ -94,10 +103,12 @@ export default function DashboardPage() {
     try {
       const workspace = await DashboardService.createWorkspace(user.id, name, description)
       if (workspace) {
-        setWorkspaces([workspace])
-        setShowWorkspaceForm(false)
+        const updatedWorkspaces = [...workspaces, workspace]
+        setWorkspaces(updatedWorkspaces)
+        setSelectedWorkspace(workspace)
+        setShowWorkspaceModal(false)
         // Auto-open site form after workspace creation
-        setTimeout(() => setShowSiteForm(true), 300)
+        setTimeout(() => setShowSiteModal(true), 300)
       }
     } catch (error) {
       console.error('Error creating workspace:', error)
@@ -107,20 +118,64 @@ export default function DashboardPage() {
   }
 
   const handleAddSite = async (domain: string, name: string, location: string) => {
-    if (!user || workspaces.length === 0) return
+    if (!user || !selectedWorkspace) return
     
     setFormLoading(true)
     try {
-      const site = await DashboardService.createSite(workspaces[0].id, user.id, domain, name, location)
+      const site = await DashboardService.createSite(selectedWorkspace.id, user.id, domain, name, location)
       if (site) {
         setCurrentSite(site)
-        setShowSiteForm(false)
+        setSelectedSite(site)
+        setShowSiteModal(false)
         await loadDashboardData(user.id)
       }
     } catch (error) {
       console.error('Error creating site:', error)
     } finally {
       setFormLoading(false)
+    }
+  }
+
+  const handleWorkspaceSelect = async (workspace: Workspace) => {
+    setSelectedWorkspace(workspace)
+    setSelectedSite(undefined)
+    setCurrentSite(null)
+    
+    // Load sites for this workspace
+    if (user) {
+      const sites = await DashboardService.getWorkspaceSites(workspace.id, user.id)
+      if (sites.length > 0) {
+        const firstSite = sites[0]
+        setCurrentSite(firstSite)
+        setSelectedSite(firstSite)
+        
+        // Load data for this site
+        const [siteKeywords, siteStats] = await Promise.all([
+          DashboardService.getSiteKeywords(firstSite.id, user.id),
+          DashboardService.getSiteStats(firstSite.id, user.id)
+        ])
+        
+        setKeywords(siteKeywords)
+        setStats(siteStats)
+        setLastUpdate('3 seconds ago')
+      }
+    }
+  }
+
+  const handleSiteSelect = async (site: Site) => {
+    setSelectedSite(site)
+    setCurrentSite(site)
+    
+    if (user) {
+      // Load data for this site
+      const [siteKeywords, siteStats] = await Promise.all([
+        DashboardService.getSiteKeywords(site.id, user.id),
+        DashboardService.getSiteStats(site.id, user.id)
+      ])
+      
+      setKeywords(siteKeywords)
+      setStats(siteStats)
+      setLastUpdate('3 seconds ago')
     }
   }
 
@@ -156,16 +211,16 @@ export default function DashboardPage() {
               <p className="text-gray-500 mb-8">Now add your first domain to start tracking keywords and monitor your search rankings.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => setShowSiteForm(true)}
+                onClick={() => setShowSiteModal(true)}
               >
                 Add Your First Domain
               </Button>
               
               {/* Show domain modal directly here if state is true */}
-              {showSiteForm && (
+              {showSiteModal && (
                 <div 
                   className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
-                  onClick={() => setShowSiteForm(false)}
+                  onClick={() => setShowSiteModal(false)}
                 >
                   <div 
                     className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 border border-gray-200"
@@ -216,7 +271,7 @@ export default function DashboardPage() {
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => setShowSiteForm(false)}
+                          onClick={() => setShowSiteModal(false)}
                           disabled={formLoading}
                           className="bg-white border-gray-200 flex-1"
                         >
@@ -249,16 +304,16 @@ export default function DashboardPage() {
               <p className="text-gray-500 mb-8">Organize your SEO projects, track keywords, and monitor your search engine rankings in one powerful dashboard.</p>
               <Button 
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => setShowWorkspaceForm(true)}
+                onClick={() => setShowWorkspaceModal(true)}
               >
                 Create Your First Workspace
               </Button>
               
               {/* Show modal directly here if state is true */}
-              {showWorkspaceForm && (
+              {showWorkspaceModal && (
                 <div 
                   className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
-                  onClick={() => setShowWorkspaceForm(false)}
+                  onClick={() => setShowWorkspaceModal(false)}
                 >
                   <div 
                     className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 border border-gray-200"
@@ -308,7 +363,7 @@ export default function DashboardPage() {
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => setShowWorkspaceForm(false)}
+                          onClick={() => setShowWorkspaceModal(false)}
                           disabled={formLoading}
                           className="bg-white border-gray-200 flex-1"
                         >
@@ -336,8 +391,34 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Site Header */}
-        <div className="flex items-center justify-between">
+        {/* Header with Workspace/Site Selector */}
+        <div className="flex flex-col gap-4">
+          {/* Workspace and Site Selectors */}
+          <div className="flex items-center justify-between">
+            <WorkspaceSelector
+              userId={user.id}
+              onWorkspaceSelect={handleWorkspaceSelect}
+              onSiteSelect={handleSiteSelect}
+              onCreateWorkspace={() => setShowWorkspaceModal(true)}
+              onCreateSite={() => setShowSiteModal(true)}
+              selectedWorkspace={selectedWorkspace}
+              selectedSite={selectedSite}
+            />
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-500">Last full update: {lastUpdate}</span>
+              <Button
+                onClick={handleRefresh}
+                variant="ghost"
+                size="sm"
+                className="text-blue-600 hover:bg-blue-50"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+            </div>
+          </div>
+          
+          {/* Current Site Header */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden">
               <img 
@@ -355,23 +436,8 @@ export default function DashboardPage() {
               />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                {currentSite.domain}
-                <ChevronDown className="h-5 w-5 text-gray-400" />
-              </h1>
+              <h1 className="text-2xl font-bold text-gray-900">{currentSite.domain}</h1>
             </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">Last full update: {lastUpdate}</span>
-            <Button
-              onClick={handleRefresh}
-              variant="ghost"
-              size="sm"
-              className="text-blue-600 hover:bg-blue-50"
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
           </div>
         </div>
 
@@ -579,7 +645,19 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Forms - No longer needed as modals are inline */}
+      {/* Modals */}
+      <WorkspaceModal
+        isOpen={showWorkspaceModal}
+        onClose={() => setShowWorkspaceModal(false)}
+        onSubmit={handleCreateWorkspace}
+        loading={formLoading}
+      />
+      <SiteModal
+        isOpen={showSiteModal}
+        onClose={() => setShowSiteModal(false)}
+        onSubmit={handleAddSite}
+        loading={formLoading}
+      />
     </DashboardLayout>
   )
 }

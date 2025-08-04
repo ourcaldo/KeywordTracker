@@ -117,12 +117,12 @@ export default function DashboardPage() {
     }
   }
 
-  const handleAddSite = async (domain: string, name: string, location: string) => {
+  const handleAddSite = async (domain: string, name: string) => {
     if (!user || !selectedWorkspace) return
     
     setFormLoading(true)
     try {
-      const site = await DashboardService.createSite(selectedWorkspace.id, user.id, domain, name, location)
+      const site = await DashboardService.createSite(selectedWorkspace.id, user.id, domain, name)
       if (site) {
         setCurrentSite(site)
         setSelectedSite(site)
@@ -236,7 +236,7 @@ export default function DashboardPage() {
                       const name = formData.get('name') as string
                       
                       if (domain.trim() && name.trim()) {
-                        handleAddSite(domain.trim(), name.trim(), 'US')
+                        handleAddSite(domain.trim(), name.trim())
                       }
                     }} className="space-y-4">
                       <div>

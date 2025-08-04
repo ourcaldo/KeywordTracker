@@ -9,14 +9,13 @@ import { X, Globe, Loader2 } from 'lucide-react'
 interface SiteModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (domain: string, name: string, location: string) => Promise<void>
+  onSubmit: (domain: string, name: string) => Promise<void>
   loading?: boolean
 }
 
 export function SiteModal({ isOpen, onClose, onSubmit, loading = false }: SiteModalProps) {
   const [domain, setDomain] = useState('')
   const [name, setName] = useState('')
-  const [location, setLocation] = useState('United States')
   const [errors, setErrors] = useState<{domain?: string, name?: string}>({})
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,11 +43,10 @@ export function SiteModal({ isOpen, onClose, onSubmit, loading = false }: SiteMo
     }
 
     try {
-      await onSubmit(domain.trim(), name.trim(), location)
+      await onSubmit(domain.trim(), name.trim())
       // Reset form on success
       setDomain('')
       setName('')
-      setLocation('United States')
     } catch (error) {
       console.error('Error creating site:', error)
     }
@@ -73,7 +71,6 @@ export function SiteModal({ isOpen, onClose, onSubmit, loading = false }: SiteMo
     if (!loading) {
       setDomain('')
       setName('')
-      setLocation('United States')
       setErrors({})
       onClose()
     }
@@ -151,29 +148,7 @@ export function SiteModal({ isOpen, onClose, onSubmit, loading = false }: SiteMo
             )}
           </div>
 
-          <div>
-            <Label htmlFor="site-location" className="text-sm font-medium text-gray-700">
-              Target Location
-            </Label>
-            <select
-              id="site-location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="mt-1 w-full px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-              disabled={loading}
-            >
-              <option value="United States">United States</option>
-              <option value="United Kingdom">United Kingdom</option>
-              <option value="Canada">Canada</option>
-              <option value="Australia">Australia</option>
-              <option value="Germany">Germany</option>
-              <option value="France">France</option>
-              <option value="Spain">Spain</option>
-              <option value="Italy">Italy</option>
-              <option value="Netherlands">Netherlands</option>
-              <option value="Sweden">Sweden</option>
-            </select>
-          </div>
+
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 pt-4">

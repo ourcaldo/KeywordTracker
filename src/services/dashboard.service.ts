@@ -143,7 +143,7 @@ export class DashboardService {
     return data
   }
 
-  static async createSite(workspaceId: string, userId: string, domain: string, name: string, location = 'US'): Promise<Site | null> {
+  static async createSite(workspaceId: string, userId: string, domain: string, name: string): Promise<Site | null> {
     const supabase = createClient()
     const { data, error } = await supabase
       .from('sites')
@@ -151,8 +151,7 @@ export class DashboardService {
         workspace_id: workspaceId,
         user_id: userId,
         domain,
-        name,
-        location
+        name
       })
       .select()
       .single()

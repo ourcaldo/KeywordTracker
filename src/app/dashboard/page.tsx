@@ -403,77 +403,84 @@ export default function DashboardPage() {
       }
     >
 
-      <div className="space-y-6">
-        {/* Header with refresh controls */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden">
-              <img 
-                src={`https://www.google.com/s2/favicons?domain=${currentSite.domain}&sz=32`}
-                alt={`${currentSite.domain} favicon`}
-                className="w-8 h-8"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const parent = target.parentElement;
-                  if (parent) {
-                    parent.innerHTML = `<span class="text-white font-bold text-lg">${currentSite.domain.charAt(0).toUpperCase()}</span>`;
-                  }
-                }}
-              />
+      {/* Main 2-column layout */}
+      <div className="flex gap-6 min-h-screen">
+        {/* Left Column - Domain Header & Filters */}
+        <div className="w-80 space-y-6">
+          {/* Domain Header */}
+          <div className="bg-white/60 backdrop-blur-xl border border-gray-200/50 rounded-xl p-6 shadow-xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden">
+                <img 
+                  src={`https://www.google.com/s2/favicons?domain=${currentSite.domain}&sz=32`}
+                  alt={`${currentSite.domain} favicon`}
+                  className="w-8 h-8"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<span class="text-white font-bold text-lg">${currentSite.domain.charAt(0).toUpperCase()}</span>`;
+                    }
+                  }}
+                />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">{currentSite.domain}</h1>
+                <p className="text-sm text-gray-500">Last update: {lastUpdate}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{currentSite.domain}</h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">Last full update: {lastUpdate}</span>
             <Button
               onClick={handleRefresh}
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="text-blue-600 hover:bg-blue-50"
+              className="w-full bg-white/50 border-gray-200/50"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Refresh
             </Button>
           </div>
-        </div>
 
-        {/* Filters */}
-        <div className="flex items-center gap-4 py-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-gray-500" />
-            <Button variant="outline" size="sm" className="bg-white/60 backdrop-blur-sm border-gray-200/50">
-              Tags <ChevronDown className="h-3 w-3 ml-1" />
-            </Button>
-            <Button variant="outline" size="sm" className="bg-white/60 backdrop-blur-sm border-gray-200/50">
-              Locations <ChevronDown className="h-3 w-3 ml-1" />
-            </Button>
-            <Button variant="outline" size="sm" className="bg-white/60 backdrop-blur-sm border-gray-200/50">
-              Positions <ChevronDown className="h-3 w-3 ml-1" />
-            </Button>
-            <Button variant="outline" size="sm" className="bg-white/60 backdrop-blur-sm border-gray-200/50">
-              Volume <ChevronDown className="h-3 w-3 ml-1" />
-            </Button>
-            <Button variant="outline" size="sm" className="bg-white/60 backdrop-blur-sm border-gray-200/50">
-              Traffic <ChevronDown className="h-3 w-3 ml-1" />
-            </Button>
-            <Button variant="outline" size="sm" className="bg-white/60 backdrop-blur-sm border-gray-200/50">
-              KD <ChevronDown className="h-3 w-3 ml-1" />
-            </Button>
-          </div>
-          <div className="flex-1 max-w-md">
-            <div className="relative">
-              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search keywords"
-                className="w-full pl-10 pr-4 py-2 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50"
-              />
+          {/* Filters Panel */}
+          <div className="bg-white/60 backdrop-blur-xl border border-gray-200/50 rounded-xl p-6 shadow-xl">
+            <h3 className="text-sm font-medium text-gray-900 mb-4">Filters</h3>
+            <div className="space-y-3">
+              <Button variant="outline" size="sm" className="w-full justify-between bg-white/50 border-gray-200/50">
+                Tags <ChevronDown className="h-3 w-3" />
+              </Button>
+              <Button variant="outline" size="sm" className="w-full justify-between bg-white/50 border-gray-200/50">
+                Locations <ChevronDown className="h-3 w-3" />
+              </Button>
+              <Button variant="outline" size="sm" className="w-full justify-between bg-white/50 border-gray-200/50">
+                Positions <ChevronDown className="h-3 w-3" />
+              </Button>
+              <Button variant="outline" size="sm" className="w-full justify-between bg-white/50 border-gray-200/50">
+                Volume <ChevronDown className="h-3 w-3" />
+              </Button>
+              <Button variant="outline" size="sm" className="w-full justify-between bg-white/50 border-gray-200/50">
+                Traffic <ChevronDown className="h-3 w-3" />
+              </Button>
+              <Button variant="outline" size="sm" className="w-full justify-between bg-white/50 border-gray-200/50">
+                KD <ChevronDown className="h-3 w-3" />
+              </Button>
+            </div>
+            
+            {/* Search */}
+            <div className="mt-4">
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search keywords"
+                  className="w-full pl-10 pr-4 py-2 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50"
+                />
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Right Column - Main Content */}
+        <div className="flex-1 space-y-6">
 
         {/* Stats Cards with Glass Effects */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -641,6 +648,7 @@ export default function DashboardPage() {
               </table>
             </div>
           </div>
+        </div>
         </div>
       </div>
 

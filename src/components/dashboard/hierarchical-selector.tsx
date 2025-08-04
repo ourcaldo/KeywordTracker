@@ -110,7 +110,7 @@ export function HierarchicalSelector({
     return (
       <div className="flex items-center gap-2">
         <Building2 className="h-4 w-4 text-gray-500" />
-        <span className="text-sm text-gray-500">Select Account</span>
+        <span className="text-sm text-gray-500">Select Workspace</span>
       </div>
     )
   }
@@ -141,7 +141,7 @@ export function HierarchicalSelector({
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-xl z-50 max-h-96 overflow-hidden">
           <div className="p-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">Select Account & Property</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-3">Select Workspace & Domain</h3>
             
             {/* Workspaces */}
             <div className="space-y-1">
@@ -196,7 +196,7 @@ export function HierarchicalSelector({
                         className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50/80 transition-colors text-blue-600"
                       >
                         <Plus className="h-4 w-4 flex-shrink-0" />
-                        <span className="text-sm">Add Property</span>
+                        <span className="text-sm">Add Domain</span>
                       </button>
                     </div>
                   )}
@@ -212,7 +212,7 @@ export function HierarchicalSelector({
                 className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50/80 transition-colors text-blue-600"
               >
                 <Plus className="h-4 w-4 flex-shrink-0" />
-                <span className="text-sm">Create Account</span>
+                <span className="text-sm">Create Workspace</span>
               </button>
             </div>
           </div>

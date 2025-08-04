@@ -139,15 +139,15 @@ export function HierarchicalSelector({
       </Button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-xl z-50 max-h-96 overflow-hidden">
-          <div className="p-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">Select Workspace & Domain</h3>
-            
-            {/* Workspaces */}
-            <div className="space-y-1">
-              {workspaces.map((workspace) => (
-                <div key={workspace.id} className="space-y-1">
+        <div className="absolute top-full left-0 mt-2 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-xl z-50 max-h-96 overflow-hidden">
+          <div className="flex">
+            {/* Left Column - Workspaces */}
+            <div className="w-64 p-4 border-r border-gray-200/50">
+              <h3 className="text-sm font-medium text-gray-900 mb-3">Workspaces</h3>
+              <div className="space-y-1">
+                {workspaces.map((workspace) => (
                   <button
+                    key={workspace.id}
                     onClick={() => handleWorkspaceClick(workspace)}
                     className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50/80 transition-colors ${
                       selectedWorkspace?.id === workspace.id ? 'bg-blue-50/80 text-blue-600' : 'text-gray-700'
@@ -156,65 +156,68 @@ export function HierarchicalSelector({
                     <Building2 className="h-4 w-4 flex-shrink-0" />
                     <span className="text-sm font-medium">{workspace.name}</span>
                   </button>
-                  
-                  {/* Sites under selected workspace */}
-                  {selectedWorkspace?.id === workspace.id && sites.length > 0 && (
-                    <div className="ml-7 space-y-1 border-l border-gray-200/50 pl-3">
-                      {sites.map((site) => (
-                        <button
-                          key={site.id}
-                          onClick={() => handleSiteClick(site)}
-                          className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50/80 transition-colors ${
-                            selectedSite?.id === site.id ? 'bg-blue-50/80 text-blue-600' : 'text-gray-600'
-                          }`}
-                        >
-                          <div className="w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
-                            <img 
-                              src={`https://www.google.com/s2/favicons?domain=${site.domain}&sz=16`}
-                              alt={`${site.domain} favicon`}
-                              className="w-3 h-3"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                const parent = target.parentElement;
-                                if (parent) {
-                                  parent.innerHTML = `<span class="text-white font-bold text-xs">${site.domain.charAt(0).toUpperCase()}</span>`;
-                                }
-                              }}
-                            />
-                          </div>
-                          <span className="text-sm">{site.domain}</span>
-                        </button>
-                      ))}
-                      
-                      {/* Add Site Button */}
-                      <button
-                        onClick={() => {
-                          onCreateSite()
-                          setIsOpen(false)
-                        }}
-                        className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50/80 transition-colors text-blue-600"
-                      >
-                        <Plus className="h-4 w-4 flex-shrink-0" />
-                        <span className="text-sm">Add Domain</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-              
-              {/* Add Workspace Button */}
-              <button
-                onClick={() => {
-                  onCreateWorkspace()
-                  setIsOpen(false)
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50/80 transition-colors text-blue-600"
-              >
-                <Plus className="h-4 w-4 flex-shrink-0" />
-                <span className="text-sm">Create Workspace</span>
-              </button>
+                ))}
+                
+                {/* Add Workspace Button */}
+                <button
+                  onClick={() => {
+                    onCreateWorkspace()
+                    setIsOpen(false)
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50/80 transition-colors text-blue-600"
+                >
+                  <Plus className="h-4 w-4 flex-shrink-0" />
+                  <span className="text-sm">Create Workspace</span>
+                </button>
+              </div>
             </div>
+            
+            {/* Right Column - Sites */}
+            {selectedWorkspace && (
+              <div className="w-64 p-4">
+                <h3 className="text-sm font-medium text-gray-900 mb-3">Domains</h3>
+                <div className="space-y-1">
+                  {sites.map((site) => (
+                    <button
+                      key={site.id}
+                      onClick={() => handleSiteClick(site)}
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50/80 transition-colors ${
+                        selectedSite?.id === site.id ? 'bg-blue-50/80 text-blue-600' : 'text-gray-600'
+                      }`}
+                    >
+                      <div className="w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <img 
+                          src={`https://www.google.com/s2/favicons?domain=${site.domain}&sz=16`}
+                          alt={`${site.domain} favicon`}
+                          className="w-3 h-3"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const parent = target.parentElement;
+                            if (parent) {
+                              parent.innerHTML = `<span class="text-white font-bold text-xs">${site.domain.charAt(0).toUpperCase()}</span>`;
+                            }
+                          }}
+                        />
+                      </div>
+                      <span className="text-sm">{site.domain}</span>
+                    </button>
+                  ))}
+                  
+                  {/* Add Site Button */}
+                  <button
+                    onClick={() => {
+                      onCreateSite()
+                      setIsOpen(false)
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-gray-50/80 transition-colors text-blue-600"
+                  >
+                    <Plus className="h-4 w-4 flex-shrink-0" />
+                    <span className="text-sm">Add Domain</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

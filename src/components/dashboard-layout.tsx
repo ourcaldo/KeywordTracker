@@ -17,9 +17,10 @@ import {
 
 interface DashboardLayoutProps {
   children: React.ReactNode
+  workspaceSelector?: React.ReactNode
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({ children, workspaceSelector }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [userProfile, setUserProfile] = useState<any>(null)
   const router = useRouter()
@@ -145,7 +146,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               >
                 <Menu className="h-5 w-5" />
               </Button>
-              {/* Removed Dashboard menu as requested */}
+              {workspaceSelector}
             </div>
             <div className="flex items-center gap-3">{/* Add Domain button removed - now handled by workspace selector */}
               <Button variant="ghost" size="icon" className="hover:bg-gray-50/80">

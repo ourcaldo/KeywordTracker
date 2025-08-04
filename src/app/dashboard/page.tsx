@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardLayout } from '@/components/dashboard-layout'
-import { WorkspaceSelector } from '@/components/dashboard/workspace-selector'
+import { HierarchicalSelector } from '@/components/dashboard/hierarchical-selector'
 import { WorkspaceModal } from '@/components/dashboard/workspace-modal'
 import { SiteModal } from '@/components/dashboard/site-modal'
 import { Button } from '@/components/ui/button'
@@ -389,36 +389,23 @@ export default function DashboardPage() {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      workspaceSelector={
+        <HierarchicalSelector
+          userId={user.id}
+          selectedWorkspace={selectedWorkspace}
+          selectedSite={selectedSite}
+          onWorkspaceSelect={handleWorkspaceSelect}
+          onSiteSelect={handleSiteSelect}
+          onCreateWorkspace={() => setShowWorkspaceModal(true)}
+          onCreateSite={() => setShowSiteModal(true)}
+        />
+      }
+    >
+
       <div className="space-y-6">
-        {/* Header with Workspace/Site Selector */}
-        <div className="flex flex-col gap-4">
-          {/* Workspace and Site Selectors */}
-          <div className="flex items-center justify-between">
-            <WorkspaceSelector
-              userId={user.id}
-              onWorkspaceSelect={handleWorkspaceSelect}
-              onSiteSelect={handleSiteSelect}
-              onCreateWorkspace={() => setShowWorkspaceModal(true)}
-              onCreateSite={() => setShowSiteModal(true)}
-              selectedWorkspace={selectedWorkspace}
-              selectedSite={selectedSite}
-            />
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500">Last full update: {lastUpdate}</span>
-              <Button
-                onClick={handleRefresh}
-                variant="ghost"
-                size="sm"
-                className="text-blue-600 hover:bg-blue-50"
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
-              </Button>
-            </div>
-          </div>
-          
-          {/* Current Site Header */}
+        {/* Header with refresh controls */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden">
               <img 
@@ -438,6 +425,18 @@ export default function DashboardPage() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{currentSite.domain}</h1>
             </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-500">Last full update: {lastUpdate}</span>
+            <Button
+              onClick={handleRefresh}
+              variant="ghost"
+              size="sm"
+              className="text-blue-600 hover:bg-blue-50"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
           </div>
         </div>
 
